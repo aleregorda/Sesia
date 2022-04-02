@@ -4,7 +4,7 @@ rm *.out *.o codice
 #gfortran Initial_conditions/Initial_Condition_paper.f90 -L$DIR/lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -lstdc++ -I$DIR/mod/
 #./a.out
 
-cp proprieta_Diabase_low_cf.f90 proprieta.f90
+#cp proprieta_Diabase_low_cf.f90 proprieta.f90
 
 export OMP_NUM_THREADS=1
 

@@ -45,28 +45,28 @@
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
  healing=.false.                                            !Calcolo strain healing
  perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
- idratazione=.false.                                             !Utilizzo idratazione - da associare a Perple_X
- serpentine=.false.                                             !Serpentinizzazione del mantello
+ idratazione=.true.                                             !Utilizzo idratazione - da associare a Perple_X
+ serpentine=.true.                                             !Serpentinizzazione del mantello
  ocean=.false.                                             !Oceanizzazione del melting
- melting=.true.                                            !Utlizzo meccanismo di melting
+ melting=.false.                                            !Utlizzo meccanismo di melting
  erosione=.false.                                            !Utilizzo meccanismo erosione/sedimentazione
  equilib=.false.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='InitialBC.wb'                                   !Nome file World Builder
+ file_world='Initial_sesia.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
  t_final=10.D06                                               !Tempo finale
- Cn=0.05D0                                                  !Courant number - compreso tra 0 e 1
+ Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Extension_models/Venus/Melting/PTg_low_cf_Venus_v1/Extension_0-10Ma/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/High_strain_threshold/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -88,7 +88,7 @@
  dim_x_lg=2.D03                                                        !Dimensione lungo X griglia
  dim_y_lg=2.D03                                                        !Dimensione lungo Y griglia
  old_lgrid=.false.                                                        !Lettura vecchio file griglia
- lgrid='../OUTPUT_Paper/Extension/Compression_20-30Ma_3/vtu_files/Grid.29995.vtu'      !Nome vecchio file griglia
+ lgrid='../Output_models/Sesia/Isostatic/vtu_files/Grid.00492.vtu'      !Nome vecchio file griglia
 
 !cccccccccccccccccccccccccccc Parametri fisici del sistema ccccccccccccccccccccccccccc
  Tref=273.15D0                                                       !Temperatura di riferimento
@@ -102,14 +102,14 @@
  healing_rate=1.D-14                                              !Velocità di strain healing
 
 !cccccccccccccccccccccccccccc Boundary condition velocità cccccccccccccccccccccccccccc
- v_sx=-1.D0                                                  !Velocità lato sinistro in cm/yr
- v_dx=1.D0                                                  !Velocità lato destro in cm/yr
+ v_sx=1.D0                                                  !Velocità lato sinistro in cm/yr
+ v_dx=0.D0                                                  !Velocità lato destro in cm/yr
  left_v=3                                                 !BC lato sx - 1-open; 2-free-slip; 3-fixed
  right_v=3                                                 !BC lato dx - 1-open; 2-free-slip; 3-fixed
  top_v=1                                                 !BC top - 1-open; 2-free-slip; 3-fixed
  bottom_v=2                                                 !BC bottom - 1-open; 2-free-slip; 3-fixed
- lito_sx=55.D03                                          !Spessore litosfera lato sx
- lito_dx=55.D03                                         !Spessore litosfera lato dx
+ lito_sx=80.D03                                          !Spessore litosfera lato sx
+ lito_dx=100.D03                                         !Spessore litosfera lato dx
  transition_BC_sx=100.D03                                        !Spessore transizione buondary condition lato sx
  transition_BC_dx=100.D03                                         !Spessore transizione buondary condition lato dx
 
@@ -120,7 +120,7 @@
  bottom_T=.true.                                                 !BC bottom
 
 !ccccccccccccccccccccccccccc Profilo iniziale temperatura cccccccccccccccccccccccccccc
- parabolic_T=.true.                                        !Incremento profilo termico iniziale non lineare
+ parabolic_T=.false.                                        !Incremento profilo termico iniziale non lineare
  LAYER_T=1                                                 !Numero livelli termici con profili non lineari
  allocate(T_top(layer_t),T_bot(layer_t),y_top(layer_t),y_bot(layer_t),radio(layer_t),cond(layer_t)) !!!!!!!!!NON MODIFICARE!!!!!!!!!
  T_top(1)=273.15                                             !Temperatura alla base del livello termico con profilo non lineare in K
@@ -131,7 +131,7 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
- file_grid='Griglia_Venus'               !Nome del file griglia
+ file_grid='../Output_models/Sesia/High_strain_threshold/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -158,16 +158,16 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
- file_marc='Marcatori_Venus'                                        !Nome del file marcatori
+ file_marc='../Output_models/Sesia/High_strain_threshold/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
- init_num_mat=4                                            !Numero iniziale dei materiali
+ init_num_mat=9                                            !Numero iniziale dei materiali
  marc_elem=16                                              !Numero di marcatori per elemento di minore dimensione
  MARKERS_CONSTANT=.true.                                          !Numero marcatori costante per ogni elemento
  MARKERS_DISTRIBUTION=1                                  !Distribuzione marcatori - 1-regolare; 2-random; 3-random seguendo una griglia regolare
 
 !cccccccccccccccccccccccccccccccc Parametri weak seed cccccccccccccccccccccccccccccccc
- WEAK_SEED=.true.                                                   !Esistenza di un weak seed
+ WEAK_SEED=.false.                                                   !Esistenza di un weak seed
  WEAK_PLASTIC=.true.                                                  !.true. weak plastico - .false. weak viscoso
  WEAK_TYPE=1                                               !Valore strain iniziale - 1-Fixed; 2-Random; 3-Sinusoidale
  WEAK_NUMBER=1                                                    !Numero di weak seed
@@ -182,8 +182,8 @@
  eff_average=.false.                                    !Calcolo viscosità effettiva markers - .true. media armonica - .false. taglio visc. min e max
  it_max=100                                                       !Iterazioni massime power-law
  tol=1.D-03                                                  !Tolleranza convergenza power-law
- e0=0.05D0                                                  !Strain iniziale per weakening plastico
- e1=1.05D0                                                  !Strain finale per weakening plastico
+ e0=0.5D0                                                  !Strain iniziale per weakening plastico
+ e1=1.5D0                                                  !Strain finale per weakening plastico
  e0v=0.05D0                                                  !Strain iniziale per weakening viscoso
  e1v=1.05D0                                                  !Strain finale per weakening viscoso
  fv=1.D02                                               !Fattore di diminuzione della viscosità in presenza di acqua
@@ -201,7 +201,7 @@
 
 !ccccccccccccccccccccccccccccc Parametri per idratazione ccccccccccccccccccccccccccccc
  H2O_0=0.D0                                                  !Quantità iniziale di acqua nel mantello in wt%
- H2O_max=0.2D0                                                  !Quantità massima di acqua nel mantello in wt%
+ H2O_max=0.5D0                                                  !Quantità massima di acqua nel mantello in wt%
  H2O_serp=6.8D0                                                  !Quantità massima di acqua nel mantello in wt%
 
 !ccccccccccccccccccccccccccccccc Parametri per melting ccccccccccccccccccccccccccccccc

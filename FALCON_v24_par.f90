@@ -950,6 +950,7 @@ contains
  logical(1) :: has_output_dir=.false.
  character(len=:), allocatable :: file_name
  integer :: i,j,k,ii,jj,kk,indice,nodo(nodi_x,nodi_y),to_x,to_y,length
+ integer*8 :: random_number_seed=1.0
  double precision :: delta_x(layer_x),delta_y(layer_y),temperature,y_min,y_max
  double precision, parameter :: depth=1.D-04
  character(len=*), intent(in) :: file_grid,file_world
@@ -961,7 +962,7 @@ contains
  length=LEN(TRIM(file_world))+20
  allocate(character(length) :: file_name)
  file_name=TRIM(ADJUSTL(file_world))//C_NULL_CHAR
- call create_world(cworld,file_name,has_output_dir,output_dir)
+ call create_world(cworld,file_name,has_output_dir,output_dir,random_number_seed)
  print *,''
  print *,'Creating grid file...'
  open(unit=1,file=file_grid,status='unknown') 
@@ -1295,6 +1296,7 @@ contains
  character(len=50) :: output_dir='../../doc/manual/'//C_NULL_CHAR
  logical(1) :: has_output_dir=.false.
  integer :: i,j,k,ii,jj,nx,length
+ integer*8 :: random_number_seed=1.0
  double precision :: xm,ym,composition
  character(len=:), allocatable :: file_name
  double precision, dimension(:), allocatable :: xmark,ymark
@@ -1306,7 +1308,7 @@ contains
  length=LEN(TRIM(file_world))+20
  allocate(character(length) :: file_name)
  file_name=TRIM(ADJUSTL(file_world))//C_NULL_CHAR
- call create_world(cworld,file_name,has_output_dir,output_dir)
+ call create_world(cworld,file_name,has_output_dir,output_dir,random_number_seed)
  print *,''
  print *,'Creating markers file...'
  open(unit=1,file=file_marc,status='unknown')
@@ -2986,6 +2988,7 @@ end subroutine Elemental_pressure
  Implicit none
 
  integer :: i
+ double precision :: heal
  logical, intent(in) :: healing
  integer, intent(in) :: marcatori,VV(marcatori)
  double precision, intent(in) :: e2t_ist(marcatori),dt,healing_rate

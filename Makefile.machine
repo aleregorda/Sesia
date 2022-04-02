@@ -13,7 +13,7 @@ SCALAPACK	 = /usr/lib/x86_64-linux-gnu
 OPTF	 = -fopenmp
 FAST     = /usr/local/lib
 #WORLD    = /home/vundar/Documenti/world_builder/WorldBuilder-master
-#WORLD    = /home/vundar/Documenti/world_builder/GeodynamicWorldBuilder-WorldBuilder-v0.4.0-340-g22227a4/GeodynamicWorldBuilder-WorldBuilder-22227a4/build
+WORLD    = /home/vundar/Documenti/world_builder/GeodynamicWorldBuilder-WorldBuilder-v0.4.0-340-g22227a4/GeodynamicWorldBuilder-WorldBuilder-22227a4/build
 
 LIBS = \
 -L$(MUMPS) -ldmumps -lmumps_common \
