@@ -395,7 +395,7 @@ program FALCON
  if(OUT_TIME)t_final=t_final/1.D06
  if(OUT_TIME)out_file_tm=out_file_tm/1.D06
  tempo=t_initial
- if(power_law)then
+ if(power_law.and..not.equilib)then
    ic_max=it_max
    ic_min=2
  else
@@ -762,7 +762,7 @@ program FALCON
      close(1)
    endif
    tempo=tempo+dt
-   call Strain(e2t_ist,dt0*t0,VV,e2t_p,e2t_v,marcatori,healing,healing_rate)
+   if(.not.equilib)call Strain(e2t_ist,dt0*t0,VV,e2t_p,e2t_v,marcatori,healing,healing_rate)
    deallocate(Telem,s2,Press,Plito,Ptot,teta_elem,cohe_elem)
    deallocate(e2_nodi,Plito_nodi)
    deallocate(e2t_ist,Visc_vp,Pmarc,Pmarc_lito,Tmarc,VV)

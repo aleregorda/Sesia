@@ -46,7 +46,7 @@
  healing=.false.                                            !Calcolo strain healing
  perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
  idratazione=.true.                                             !Utilizzo idratazione - da associare a Perple_X
- serpentine=.true.                                             !Serpentinizzazione del mantello
+ serpentine=.false.                                             !Serpentinizzazione del mantello
  ocean=.false.                                             !Oceanizzazione del melting
  melting=.false.                                            !Utlizzo meccanismo di melting
  erosione=.false.                                            !Utilizzo meccanismo erosione/sedimentazione
@@ -66,7 +66,7 @@
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/High_strain_threshold/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Ocean/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -131,7 +131,8 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
- file_grid='../Output_models/Sesia/High_strain_threshold/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia'               !Nome del file griglia
+ file_grid='../Output_models/Sesia/Ocean/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -158,7 +159,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
- file_marc='../Output_models/Sesia/High_strain_threshold/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_ocean'                                        !Nome del file marcatori
+ file_marc='../Output_models/Sesia/Ocean/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali
@@ -184,8 +186,8 @@
  tol=1.D-03                                                  !Tolleranza convergenza power-law
  e0=0.5D0                                                  !Strain iniziale per weakening plastico
  e1=1.5D0                                                  !Strain finale per weakening plastico
- e0v=0.05D0                                                  !Strain iniziale per weakening viscoso
- e1v=1.05D0                                                  !Strain finale per weakening viscoso
+ e0v=0.5D0                                                  !Strain iniziale per weakening viscoso
+ e1v=1.5D0                                                  !Strain finale per weakening viscoso
  fv=1.D02                                               !Fattore di diminuzione della viscosità in presenza di acqua
  OH_0=0.062D0                                               !Limite quantità di acqua per comportamento anidro
  alpham_dl=-45.D0                                            !Esponente dislocation per la componente di melt
