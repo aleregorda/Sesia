@@ -1,0 +1,71 @@
+{
+    "version":"0.5",
+    "coordinate system":{"model":"cartesian"},
+    "cross section":[[0,0],[100,0]],
+    "features":[
+  
+    {"model":"mantle layer", "name":"cont mantle", "min depth":100e3, "max depth":600e3, "coordinates":[[660e3,-1e3],[1200e3,-1e3],[1200e3,1e3],[660e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":100e3, "max depth":600e3, "top temperature":1603.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[7]}]},
+
+    {"model":"mantle layer", "name":"oc mantle", "min depth":80e3, "max depth":600e3, "coordinates":[[0e3,-1e3],[600e3,-1e3],[600e3,1e3],[0e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":80e3, "max depth":600e3, "top temperature":1603.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[7]}]},
+
+    {"model":"mantle layer", "name":"var mantle", "min depth":[[80e3,[[600e3,0e3]]],[100e3,[[660e3,0e3]]]],"max depth":600e3,
+     "coordinates":[[600e3,-1e3],[660e3,-1e3],[660e3,1e3],[600e3,1e3]],
+     "temperature models":[{"model":"linear","min depth":[[80e3,[[600e3,0e3]]],[100e3,[[660e3,0e3]]]], "max depth":600e3,
+     "top temperature":1603.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[7]}]},
+
+    {"model":"mantle layer", "name":"cont upper mantle", "min depth":30e3, "max depth":100e3, "coordinates":[[660e3,-1e3],[1200e3,-1e3],[1200e3,1e3],[660e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":30e3, "max depth":100e3, "top temperature":823.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[6]}]},
+
+    {"model":"mantle layer", "name":"oc upper mantle", "min depth":10e3, "max depth":80e3, "coordinates":[[0e3,-1e3],[600e3,-1e3],[600e3,1e3],[0e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":10e3, "max depth":80e3, "top temperature":823.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[6]}]},
+
+    {"model":"mantle layer", "name":"var upper mantle", "min depth":[[10e3,[[600e3,0e3]]],[30e3,[[660e3,0e3]]]],
+     "max depth":[[80e3,[[600e3,0e3]]],[100e3,[[660e3,0e3]]]],
+     "coordinates":[[600e3,-1e3],[660e3,-1e3],[660e3,1e3],[600e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":[[10e3,[[600e3,0e3]]],[30e3,[[660e3,0e3]]]], "max depth":[[80e3,[[600e3,0e3]]],[100e3,[[660e3,0e3]]]],
+     "top temperature":823.15, "bottom temperature":1603.15}],
+     "composition models":[{"model":"uniform", "compositions":[6]}]},
+
+    {"model":"mantle layer", "name":"ocean", "min depth":0e3, "max depth":10e3, "coordinates":[[0e3,-1e3],[550e3,-1e3],[550e3,1e3],[0e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":0e3, "max depth":10e3, "top temperature":273.15, "bottom temperature":823.15}],
+     "composition models":[{"model":"uniform", "min depth":0e3, "max depth":5e3, "compositions":[3]},
+                           {"model":"uniform", "min depth":5e3, "max depth":10e3, "compositions":[4]}]},
+                
+    {"model":"continental plate", "name":"continent", "coordinates":[[660e3,-1e3],[1200e3,-1e3],[1200e3,1e3],[660e3,1e3]],
+     "temperature models":[{"model":"linear", "max depth":30e3, "top temperature":273.15, "bottom temperature":823.15}],
+     "composition models":[{"model":"uniform", "compositions":[1], "max depth":20e3},
+                           {"model":"uniform", "compositions":[2], "min depth":20e3, "max depth":30e3}]},
+
+    {"model":"continental plate", "name":"var continent", "min depth":0e3, "max depth":[[10e3,[[600e3,0e3]]],[30e3,[[660e3,0e3]]]],
+     "coordinates":[[600e3,-1e3],[660e3,-1e3],[660e3,1e3],[600e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":0e3, "max depth":[[10e3,[[600e3,0e3]]],[30e3,[[660e3,0e3]]]],     
+     "top temperature":273.15, "bottom temperature":823.15}],
+     "composition models":[{"model":"uniform", "compositions":[1], "max depth":[[10e3,[[600e3,0e3]]],[20e3,[[660e3,0e3]]]]},
+                           {"model":"uniform", "compositions":[2], "min depth":[[10e3,[[600e3,0e3]]],[20e3,[[660e3,0e3]]]],
+                            "max depth":[[10e3,[[600e3,0e3]]],[30e3,[[660e3,0e3]]]]}]},
+
+    {"model":"continental plate", "name":"microocean", "coordinates":[[550e3,-1e3],[600e3,-1e3],[600e3,1e3],[550e3,1e3]],
+     "temperature models":[{"model":"linear", "max depth":10e3, "top temperature":273.15, "bottom temperature":823.15}],
+     "composition models":[{"model":"uniform", "min depth":0e3, "max depth":5e3, "compositions":[3]},
+                           {"model":"uniform", "min depth":5e3, "max depth":10e3, "compositions":[4]}]},
+                           
+    {"model":"continental plate", "name":"wedge", "min depth":0e3, "max depth":[[0e3,[[590e3,0e3]]],[10e3,[[600e3,0e3]]]],
+     "coordinates":[[590e3,-1e3],[600e3,-1e3],[600e3,1e3],[590e3,1e3]],
+     "composition models":[{"model":"uniform", "compositions":[1], "max depth":[[0e3,[[590e3,0e3]]],[10e3,[[600e3,0e3]]]]}]},
+     
+    {"model":"subducting plate", "name":"subducting plate", "coordinates":[[550e3,-1e3],[550e3,1e3]], "dip point":[1000e3,0],
+     "segments":[{"length":45e3, "thickness":[80e3], "angle":[0]},
+                 {"length":10e3, "thickness":[80e3], "angle":[0,30]},
+     "segments":[{"length":100e3, "thickness":[80e3], "angle":[30]}],
+     "temperature models":[{"model":"linear", "max distance slab top":80e3, "top temperature":273.15, "bottom temperature":823.15}],
+     "composition models":[{"model":"uniform", "min depth":0e3, "max depth":5e3, "compositions":[3]},
+                           {"model":"uniform", "min depth":5e3, "max depth":10e3, "compositions":[4]},
+                           {"model":"uniform", "min depth":10e3, "max depth":80e3, "compositions":[6]}]}
+  ]}
