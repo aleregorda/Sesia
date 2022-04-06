@@ -130,10 +130,18 @@ program FALCON
       courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,uniaxial,&
       markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,&
       ymin_lg,ymax_lg,max_time_step,healing,healing_rate)
+ if(equilib)then
+   v_sx=0.D0
+   v_dx=0.D0
+   top_v=2
+   bottom_v=2
+   right_v=2
+   left_v=2
+ endif
  if(free_surface)top_v=1
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-!c     PRutpuPRIETA' DEI MATERIALI
+!c     PROPRIETA' DEI MATERIALI
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
  if(iproc.eq.0)then
@@ -714,8 +722,10 @@ program FALCON
 
    print *,'  Done!'
    call cpu_time(t2)
-   print 1011,ic-1
-   print 1010,MAX(norm_res/norm_r0,norm_dvel/norm_vel),tol
+   if(power_law.and..not.equilib)then
+     print 1011,ic-1
+     print 1010,MAX(norm_res/norm_r0,norm_dvel/norm_vel),tol
+   endif
    print 1013,t2-t1
    print 1015,(t2-t1)*nproc
    print *,''

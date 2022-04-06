@@ -55,7 +55,7 @@
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='Initial_sesia.wb'                                   !Nome file World Builder
+ file_world='Initial_ocean_sub.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
@@ -66,7 +66,7 @@
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/Ocean/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Ocean_sub/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -131,8 +131,8 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
-! file_grid='Griglia'               !Nome del file griglia
- file_grid='../Output_models/Sesia/Ocean/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia_ocean_sub'               !Nome del file griglia
+ file_grid='../Output_models/Sesia/Ocean_sub/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -159,8 +159,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
-! file_marc='Marcatori_ocean'                                        !Nome del file marcatori
- file_marc='../Output_models/Sesia/Ocean/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_ocean_sub'                                        !Nome del file marcatori
+ file_marc='../Output_models/Sesia/Ocean_sub/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali
@@ -174,8 +174,8 @@
  WEAK_TYPE=1                                               !Valore strain iniziale - 1-Fixed; 2-Random; 3-Sinusoidale
  WEAK_NUMBER=1                                                    !Numero di weak seed
  allocate(weak_pos_x(weak_number),weak_pos_y(weak_number),weak_dim_x(weak_number),weak_dim_y(weak_number)) !!!!!!!!!NON MODIFICARE!!!!!!!!!
- WEAK_POS_X(1)=600.D03                                                         !Posizione X del weak seed in metri
- WEAK_POS_Y(1)=572.D03                                                         !Posizione Y del weak seed in metri
+ WEAK_POS_X(1)=591.D03                                                         !Posizione X del weak seed in metri
+ WEAK_POS_Y(1)=586.D03                                                         !Posizione Y del weak seed in metri
  WEAK_DIM_X(1)=6.D03                                                         !Dimensione X del weak seed in metri
  WEAK_DIM_Y(1)=6.D03                                                         !Dimensione Y del weak seed in metri
 
@@ -184,8 +184,8 @@
  eff_average=.false.                                    !Calcolo viscosità effettiva markers - .true. media armonica - .false. taglio visc. min e max
  it_max=100                                                       !Iterazioni massime power-law
  tol=1.D-03                                                  !Tolleranza convergenza power-law
- e0=0.5D0                                                  !Strain iniziale per weakening plastico
- e1=1.5D0                                                  !Strain finale per weakening plastico
+ e0=0.05D0                                                  !Strain iniziale per weakening plastico
+ e1=1.05D0                                                  !Strain finale per weakening plastico
  e0v=0.5D0                                                  !Strain iniziale per weakening viscoso
  e1v=1.5D0                                                  !Strain finale per weakening viscoso
  fv=1.D02                                               !Fattore di diminuzione della viscosità in presenza di acqua
