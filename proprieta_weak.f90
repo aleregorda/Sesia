@@ -1,22 +1,23 @@
- subroutine proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,grain,Ea,Va,coeffA,m_grain,&
+ subroutine proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,&
  Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,Rw_f,Rw_c,Ws,&
- diffusion,rheology,f_scale,t_wet,Visc_min,Visc_max)
+ diffusion,rheology,f_scale,t_wet,Visc_min,Visc_max,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe)
 
  Implicit none
 
  integer, intent(out) :: num_mat,i,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,t_wet
  character(len=*), dimension(:), allocatable, intent(out) :: materiale
- logical, dimension(:), allocatable, intent(out) :: diffusion
+ logical, dimension(:), allocatable, intent(out) :: diffusion,peierls
  integer, dimension(:), allocatable, intent(out) :: rheology
- double precision, dimension(:), allocatable, intent(out) :: Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,grain,Ea,Va,&
- coeffA,m_grain,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Rw_f,Rw_c,Ws,f_scale,Visc_min,Visc_max
+ double precision, dimension(:), allocatable, intent(out) :: Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,&
+ coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Rw_f,Rw_c,Ws,f_scale,Visc_min,Visc_max,Ea_pe,ndisl_pe,Va_pe,coeffA_pe
 
  num_mat=12                                                    !Numero di materiali del sistema
 
  allocate(materiale(num_mat),Tref_M(num_mat),Rho_M(num_mat),Visc_M(num_mat),alpha_M(num_mat),Cp_M(num_mat),Hr_M(num_mat),&
- Kc_M(num_mat),ndisl(num_mat),grain(num_mat),Ea(num_mat),Va(num_mat),coeffA(num_mat),m_grain(num_mat),Eadf(num_mat),Vadf(num_mat),&
+ Kc_M(num_mat),ndisl(num_mat),Ea(num_mat),Va(num_mat),coeffA(num_mat),Eadf(num_mat),Vadf(num_mat),&
  coeffAdf(num_mat),teta_fr_M(num_mat),Cohe_M(num_mat),Rw_f(num_mat),Rw_c(num_mat),Ws(num_mat),diffusion(num_mat),rheology(num_mat),&
- f_scale(num_mat),Visc_min(num_mat),Visc_max(num_mat))
+ f_scale(num_mat),Visc_min(num_mat),Visc_max(num_mat),peierls(num_mat),Ea_pe(num_mat),ndisl_pe(num_mat),Va_pe(num_mat),&
+ coeffA_pe(num_mat))
 
 !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !c     PROPRIETA' DEI MATERIALI - verificare che il numero di materiali sia uguale a num_mat
@@ -45,10 +46,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -79,10 +84,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -113,10 +122,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=0.D0                                                  !Coesione iniziale
@@ -146,10 +159,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=1.D07                                                  !Coesione iniziale
@@ -180,10 +197,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=0.D0                                                  !Coesione iniziale
@@ -207,17 +228,21 @@
  Visc_min(i)=1.D20                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
 !Disclocation creep
- coeffA(i)=2.42D-16                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
- Ea(i)=5.4041D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=1.D-13                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.D0                                                  !Stress exponent dislocation creep
+ Ea(i)=5.D05                                                  !Energia di attivazione dislocation creep
  Va(i)=15.D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=1.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+ diffusion(i)=.true.                                                 !Utilizzo diffusion creep
+ coeffAdf(i)=5.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
+ Eadf(i)=3.35D05                                                  !Energia di attivazione diffusion creep
+ Vadf(i)=4.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.true.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.D-150                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=20.D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -245,12 +270,16 @@
  Ea(i)=5.4041D05                                                  !Energia di attivazione dislocation creep
  Va(i)=15.D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=1.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+ diffusion(i)=.true.                                                 !Utilizzo diffusion creep
+ coeffAdf(i)=5.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
+ Eadf(i)=3.35D05                                                  !Energia di attivazione diffusion creep
+ Vadf(i)=4.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.true.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.D-150                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=20.D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -280,10 +309,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -313,10 +346,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -347,10 +384,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=2.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=5.D06                                                  !Coesione iniziale
@@ -379,12 +420,16 @@
  Ea(i)=4.3D05                                                  !Energia di attivazione dislocation creep
  Va(i)=15.D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=2.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+ diffusion(i)=.true.                                                 !Utilizzo diffusion creep
+ coeffAdf(i)=5.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
+ Eadf(i)=3.35D05                                                  !Energia di attivazione diffusion creep
+ Vadf(i)=4.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.true.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.D-150                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=20.D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
@@ -415,10 +460,14 @@
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=2.92D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- grain(i)=1.D-03                                                  !Dimensione grani per diffusion creep
- m_grain(i)=2.5D0                                                  !Esponente dimensione grani per diffusione creep
  Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
  Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+!Peierls creep
+ peierls=.false.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
  teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
