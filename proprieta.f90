@@ -40,9 +40,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=3.1623D-26                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=2.3D0                                                  !Stress exponent dislocation creep
- Ea(i)=1.54D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.2D0                                                  !Stress exponent dislocation creep
+ Ea(i)=1.23D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
@@ -56,8 +56,8 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -79,9 +79,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=8.04D-25                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=2.4D0                                                  !Stress exponent dislocation creep
- Ea(i)=2.6D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=2.009509D-21                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.1D0                                                  !Stress exponent dislocation creep
+ Ea(i)=2.43D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
@@ -95,8 +95,8 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -118,10 +118,10 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=5.0477D-28                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=4.7D0                                                  !Stress exponent dislocation creep
- Ea(i)=4.85D05                                                  !Energia di attivazione dislocation creep
- Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
+ coeffA(i)=1.393D-37                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.8D0                                                  !Stress exponent dislocation creep
+ Ea(i)=8.9D04                                                  !Energia di attivazione dislocation creep
+ Va(i)=3.2D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
@@ -134,8 +134,8 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=0.D0                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -156,9 +156,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=5.0477D-28                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=4.7D0                                                  !Stress exponent dislocation creep
- Ea(i)=4.85D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=1.990536D-11                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.4D0                                                  !Stress exponent dislocation creep
+ Ea(i)=4.97D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
@@ -172,7 +172,7 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
  Cohe_M(i)=1.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
@@ -250,8 +250,8 @@
  Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -288,8 +288,8 @@
  Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -310,9 +310,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=3.1623D-26                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=2.3D0                                                  !Stress exponent dislocation creep
- Ea(i)=1.54D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.2D0                                                  !Stress exponent dislocation creep
+ Ea(i)=1.23D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
@@ -326,8 +326,8 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -348,9 +348,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=8.04D-25                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=2.4D0                                                  !Stress exponent dislocation creep
- Ea(i)=2.6D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=2.009509D-21                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.1D0                                                  !Stress exponent dislocation creep
+ Ea(i)=2.43D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
@@ -364,8 +364,8 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -442,8 +442,8 @@
  Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
@@ -481,8 +481,8 @@
  Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_M(i)=30.D0                                                  !Angolo di frizione iniziale
- Cohe_M(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_M(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
  Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
