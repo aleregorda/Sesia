@@ -387,9 +387,9 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=8.574D-28                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=4.D0                                                  !Stress exponent dislocation creep
- Ea(i)=2.22815D05                                                  !Energia di attivazione dislocation creep
+ coeffA(i)=7.962143D-28                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=1.9D0                                                  !Stress exponent dislocation creep
+ Ea(i)=1.4D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep

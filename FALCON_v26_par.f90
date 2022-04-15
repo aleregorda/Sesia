@@ -18,7 +18,7 @@ program FALCON
    n_elem_x,n_elem_y,WEAK_SEED,WEAK_TYPE,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,&
    file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
    layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,&
-   serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press)
+   serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act)
    logical, intent(out) :: perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,&
    OUT_FILE_nl,OUT_FILE_nl_vtu,OUT_FILE_nl_it,vel_corr,runge_4,OUT_FILE_final_distribution,NEW_FILE_GRID,NEW_FILE_MARKERS,&
    MARKERS_CONSTANT,left_T,right_T,top_T,bottom_T,WEAK_SEED,courant_number,check_markers,eff_average,shear,adiabatic,solver_T,parabolic_T,&
@@ -31,7 +31,7 @@ program FALCON
    transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
    e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
    g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,dim_x_lg,&
-   dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate
+   dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
    integer, dimension(:), allocatable :: n_elem_x,n_elem_y
    double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
    y_bot,radio,cond
@@ -73,7 +73,7 @@ program FALCON
  Ts,Tb,Tref,Rhoref,Cpref,Diff,Viscref,alpharef,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,&
  tol_melt,Hl,e0,e1,e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_d,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,g_coeff,gsed_coeff,&
  p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,kappa_fsed,kappa_dsed,Diss,e2rdm,thick_air,time_step,t_initial,&
- dim_x_lg,dim_y_lg,Press_0,H2O_serp,weak,e0w,e1w,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate
+ dim_x_lg,dim_y_lg,Press_0,H2O_serp,weak,e0w,e1w,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
 
  logical, dimension(:), allocatable :: BC_fix,BC_fixT,diffusion,inside,peierls,uniaxial
  character(len=50), dimension(:), allocatable ::materiale
@@ -129,7 +129,7 @@ program FALCON
       WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,&
       courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,&
       markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,&
-      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press)
+      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act)
  if(equilib)then
    v_sx=0.D0
    v_dx=0.D0
@@ -773,7 +773,7 @@ program FALCON
      close(1)
    endif
    tempo=tempo+dt
-   if(.not.equilib)call Strain(e2t_ist,dt0*t0,VV,e2t_p,e2t_v,marcatori,healing,healing_rate)
+   if(.not.equilib)call Strain(e2t_ist,dt0*t0,VV,e2t_p,e2t_v,marcatori,healing,healing_rate,thermal_act,e1,e1v,Tmarc/(Tb-Ts))
    deallocate(Telem,s2,Press,Plito,Ptot,teta_elem,cohe_elem)
    deallocate(e2_nodi,Plito_nodi)
    deallocate(e2t_ist,Visc_vp,Pmarc,Pmarc_lito,Tmarc,VV)
@@ -876,11 +876,11 @@ program FALCON
             W_f_tmp(marcatori),W_m_tmp(marcatori),melt_fraction_tmp(marcatori),inside(marcatori),marc_each_elem(elementi,MAXVAL(nmax*2)))
    call Advezione(elementi,elem_x,elem_y,nodi,nodi_elem,x,y,x_marc,y_marc,n_marc,marcatori,marcatoritot,elem_marc,Vx,Vy,connessioni,dt0,C,nmax,larghezza,&
         altezza,x_min,x_max,y_min,y_max,ndof,vel_corr,runge,layer_x,layer_y,n_elem_x,n_elem_y,thick_x,thick_y,inside,marc_in,marc_each_elem,marc_agg,e2t_p,&
-        e2t_v,e1,e1v,type_marc,W_b,W_f,W_m,melt_fraction,free_surface,erosione,chain,x_chain,y_chain,t_air,t_sed,n_marc_tmp,type_marc_tmp,elem_marc_tmp,&
+        e2t_v,type_marc,W_b,W_f,W_m,melt_fraction,free_surface,erosione,chain,x_chain,y_chain,t_air,t_sed,n_marc_tmp,type_marc_tmp,elem_marc_tmp,&
         x_marc_tmp,y_marc_tmp,e2t_p_tmp,e2t_v_tmp,W_b_tmp,W_f_tmp,W_m_tmp,melt_fraction_tmp)
    if(check_markers)call Add_remove_markers(free_surface,elementi,nmin,nmax,nodi,nodi_elem,connessioni,marc_each_elem,marcatori,marcatoritot,n_marc,type_marc,&
                          delta_x,xmin_elem,ymin_elem,ymax_elem,x,y,x_marc,y_marc,larghezza,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,C,n_marc_a,type_marc_a,&
-                         elem_marc_a,x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg)
+                         elem_marc_a,x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg,erosione,elem_x,elem_y,t_sed)
    deallocate(n_marc,type_marc,elem_marc,x_marc,y_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction)
    allocate(n_marc(marc_in+marc_agg),type_marc(marc_in+marc_agg),elem_marc(marcatoritot+marc_agg),x_marc(marc_in+marc_agg),y_marc(marc_in+marc_agg),&
             e2t_p(marc_in+marc_agg),e2t_v(marc_in+marc_agg),W_b(marc_in+marc_agg),W_f(marc_in+marc_agg),W_m(marc_in+marc_agg),melt_fraction(marc_in+marc_agg))
@@ -3014,28 +3014,34 @@ end subroutine Elemental_pressure
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
- subroutine Strain(e2t_ist,dt,VV,e2t_p,e2t_v,marcatori,healing,healing_rate)
+ subroutine Strain(e2t_ist,dt,VV,e2t_p,e2t_v,marcatori,healing,healing_rate,thermal_act,e1,e1v,T_heal)
 
  Implicit none
 
  integer :: i
- double precision :: heal
+ double precision :: heal,app_heal
  logical, intent(in) :: healing
  integer, intent(in) :: marcatori,VV(marcatori)
- double precision, intent(in) :: e2t_ist(marcatori),dt,healing_rate
+ double precision, intent(in) :: e2t_ist(marcatori),dt,healing_rate,thermal_act,e1,e1v,T_heal(marcatori)
  double precision, intent(inout) :: e2t_p(marcatori),e2t_v(marcatori)
 
- if(healing)then
-   heal=healing_rate
- else
-   heal=0.D0
- endif
  do i=1,marcatori
-   if(VV(i).eq.2.or.VV(i).eq.3.or.VV(i).eq.4)then
-     e2t_v(i)=e2t_v(i)+(e2t_ist(i)-heal)*dt
-   elseif(VV(i).eq.5)then
-     e2t_p(i)=e2t_p(i)+(e2t_ist(i)-heal)*dt
+   if(healing)then
+     heal=healing_rate*DEXP((-thermal_act/2.D0)*((1.D0/(T_heal(i)+1.D0))-0.5D0))
+   else
+     heal=0.D0
    endif
+   if(VV(i).eq.2.or.VV(i).eq.3.or.VV(i).eq.4)then
+     app_heal=heal*e2t_v(i)
+     e2t_v(i)=e2t_v(i)+(e2t_ist(i)-app_heal)*dt
+   elseif(VV(i).eq.5)then
+     app_heal=heal*e2t_p(i)
+     e2t_p(i)=e2t_p(i)+(e2t_ist(i)-app_heal)*dt
+   endif
+   if(e2t_p(i).gt.e1)e2t_p(i)=e1
+   if(e2t_v(i).gt.e1v)e2t_v(i)=e1v
+!   if(e2t_p(i).lt.0.D0)e2t_p(i)=0.D0
+!   if(e2t_v(i).lt.0.D0)e2t_v(i)=0.D0
  enddo
 
  end subroutine Strain
@@ -3194,8 +3200,8 @@ end subroutine Elemental_pressure
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
  subroutine Advezione(elementi,elem_x,elem_y,nodi,nodi_elem,x,y,x_marc,y_marc,n_marc,marcatori,marcatoritot,elem_marc,Vx,Vy,connessioni,dt,C,nmax,larghezza,&
- altezza,x_min,x_max,y_min,y_max,ndime,vel_corr,runge,layer_x,layer_y,n_elem_x,n_elem_y,thick_x,thick_y,inside,marc_in,marc_each_elem,marc_agg,e2t_p,e2t_v,e1,&
- e1v,type_marc,W_b,W_f,W_m,melt_fraction,free_surface,erosione,chain,x_chain,y_chain,t_air,t_sed,n_marc_tmp,type_marc_tmp,elem_marc_tmp,x_marc_tmp,y_marc_tmp,&
+ altezza,x_min,x_max,y_min,y_max,ndime,vel_corr,runge,layer_x,layer_y,n_elem_x,n_elem_y,thick_x,thick_y,inside,marc_in,marc_each_elem,marc_agg,e2t_p,e2t_v,&
+ type_marc,W_b,W_f,W_m,melt_fraction,free_surface,erosione,chain,x_chain,y_chain,t_air,t_sed,n_marc_tmp,type_marc_tmp,elem_marc_tmp,x_marc_tmp,y_marc_tmp,&
  e2t_p_tmp,e2t_v_tmp,W_b_tmp,W_f_tmp,W_m_tmp,melt_fraction_tmp)
 
  Implicit none
@@ -3206,7 +3212,7 @@ end subroutine Elemental_pressure
  integer, intent(in) :: elementi,nodi_elem,nodi,connessioni(elementi,nodi_elem),elem_x,elem_y,ndime,layer_x,layer_y,n_elem_x(layer_x),&
  n_elem_y(layer_y),marcatori,marcatoritot,n_marc(marcatori),nmax(elementi),chain,t_air,t_sed
 
- double precision, intent(in) :: Vx(nodi),Vy(nodi),dt,x(nodi),y(nodi),larghezza,altezza,x_min,x_max,y_min,y_max,thick_x(layer_x),thick_y(layer_y),e1,e1v,&
+ double precision, intent(in) :: Vx(nodi),Vy(nodi),dt,x(nodi),y(nodi),larghezza,altezza,x_min,x_max,y_min,y_max,thick_x(layer_x),thick_y(layer_y),&
  W_b(marcatori),W_f(marcatori),W_m(marcatori),melt_fraction(marcatori),x_chain(chain),y_chain(chain)
 
  logical, intent(out) :: inside(marcatori)
@@ -3232,8 +3238,6 @@ end subroutine Elemental_pressure
      call Runge_2nd(x_marc(i),y_marc(i),elem_marc(n_marc(i)),ndime,elementi,nodi_elem,connessioni,x,y,nodi,vel_corr,Vx,Vy,dt,elem_x,elem_y,&
           x_min,x_max,y_min,y_max,larghezza,altezza,free_surface,layer_x,layer_y,n_elem_x,n_elem_y,thick_x,thick_y)
    endif
-   if(e2t_p(i).gt.e1)e2t_p(i)=e1
-   if(e2t_v(i).gt.e1v)e2t_v(i)=e1v
    if(.not.free_surface.and.erosione)then
      col_chain=INT((x_marc(i)/larghezza)*(chain-1))+1
      if(col_chain.gt.chain-1)col_chain=chain-1
@@ -3420,15 +3424,15 @@ end subroutine Elemental_pressure
 
  subroutine Add_remove_markers(free_surface,elementi,nmin,nmax,nodi,nodi_elem,connessioni,marc_in_elem,marcatori,marcatoritot,n_marc,type_marc,&
  delta_x,xmin_elem,ymin_elem,ymax_elem,x,y,x_marc,y_marc,larghezza,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,C,n_marc_a,type_marc_a,elem_marc_a,&
- x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg)
+ x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg,erosione,elem_x,elem_y,t_sed)
 
  Implicit none
 
  integer :: i,j,k,kk,in_elem,missed,plus,flag
  double precision :: distmax,distmin,dist,xx,yy,xtmp,ytmp,ymin,ymax,xmarc,ymarc
- logical, intent(in) :: free_surface
+ logical, intent(in) :: free_surface,erosione
  integer, intent(in) :: elementi,nmin(elementi),nmax(elementi),nodi,nodi_elem,connessioni(elementi,nodi_elem),marc_in_elem(elementi,MAXVAL(nmax*2)),&
- marcatori,marcatoritot,n_marc(marcatori),type_marc(marcatori)
+ marcatori,marcatoritot,n_marc(marcatori),type_marc(marcatori),elem_x,elem_y,t_sed
 
  double precision, intent(in) :: delta_x(elementi),xmin_elem(elementi),ymin_elem(elementi),ymax_elem(elementi),x(nodi),y(nodi),x_marc(marcatori),&
  y_marc(marcatori),larghezza,e2t_p(marcatori),e2t_v(marcatori),W_b(marcatori),W_f(marcatori),W_m(marcatori),melt_fraction(marcatori)
@@ -3476,7 +3480,6 @@ end subroutine Elemental_pressure
            n_marc_a(marc_agg)=marc_agg+marcatoritot
            x_marc_a(marc_agg)=xmarc
            y_marc_a(marc_agg)=ymarc
-           type_marc_a(marc_agg)=type_marc(marc_in_elem(i,k))
            e2t_p_a(marc_agg)=e2t_p(marc_in_elem(i,k))
            e2t_v_a(marc_agg)=e2t_v(marc_in_elem(i,k))
            elem_marc_a(marc_agg)=i
@@ -3484,6 +3487,11 @@ end subroutine Elemental_pressure
            W_m_a(marc_agg)=W_m(marc_in_elem(i,k))
            W_f_a(marc_agg)=W_f(marc_in_elem(i,k))
            melt_fraction_a(marc_agg)=melt_fraction(marc_in_elem(i,k))
+           if(free_surface.and.erosione.and.i.gt.elem_x*(elem_y-1))then
+             type_marc_a(marc_agg)=t_sed
+           else
+             type_marc_a(marc_agg)=type_marc(marc_in_elem(i,k))
+           endif
          endif
        enddo
      enddo

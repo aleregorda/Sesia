@@ -10,7 +10,7 @@
  file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
  layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,dim_x_lg,dim_y_lg,&
  old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,&
- rho_press)
+ rho_press,thermal_act)
 
  Implicit none
 
@@ -29,7 +29,7 @@
  transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
  e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
  g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,&
- dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate
+ dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
 
  integer, dimension(:), allocatable :: n_elem_x,n_elem_y
  double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
@@ -44,15 +44,15 @@
  solver_T=.true.                                             !Risoluzione dell'equazione dell'energia
  shear=.true.                                         !Utilizzo shear heating nell'equazione dell'energia
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
- healing=.false.                                            !Calcolo strain healing
- rho_press=.false.                                            !Densità dipendente dalla pressione
+ healing=.true.                                            !Calcolo strain healing
+ rho_press=.true.                                            !Densità dipendente dalla pressione
  perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
  idratazione=.true.                                             !Utilizzo idratazione
  serpentine=.true.                                             !Serpentinizzazione del mantello
  ocean=.false.                                             !Oceanizzazione del melting
- melting=.false.                                            !Utlizzo meccanismo di melting
+ melting=.true.                                            !Utlizzo meccanismo di melting
  erosione=.true.                                            !Utilizzo meccanismo erosione/sedimentazione
- equilib=.true.                                       !Fase di riequilibrazione isostatica
+ equilib=.false.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
@@ -62,13 +62,13 @@
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
- t_final=0.5D06                                               !Tempo finale
+ t_final=10.D06                                               !Tempo finale
  Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/Isostatic/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -100,7 +100,6 @@
  alpharef=3.1D-05                                                  !Coefficiente di espansione termica di riferimento
  Gy=-9.81D0                                                       !Gravità
  Press_0=0.0D0                                                   !Pressione superficiale
- healing_rate=1.D-14                                              !Velocità di strain healing
 
 !cccccccccccccccccccccccccccc Boundary condition velocità cccccccccccccccccccccccccccc
  v_sx=1.D0                                                  !Velocità lato sinistro in cm/yr
@@ -132,8 +131,8 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
- file_grid='Griglia_serpentine_sub'               !Nome del file griglia
-! file_grid='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia_serpentine_sub'               !Nome del file griglia
+ file_grid='../Output_models/Sesia/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -160,8 +159,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
- file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
-! file_marc='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
+ file_marc='../Output_models/Sesia/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali
@@ -192,6 +191,10 @@
  OH_0=0.062D0                                               !Limite quantità di acqua per comportamento anidro
  alpham_dl=-45.D0                                            !Esponente dislocation per la componente di melt
  alpham_df=-30.D0                                            !Esponente diffusion per la componente di melt
+
+!ccccccccccccccccccccccccccccccccc Parametri healing ccccccccccccccccccccccccccccccccc
+ healing_rate=1.D-14                                              !Velocità di strain healing
+ thermal_act=100.D0                                               !Thermal activation constant
 
 !ccccccccccccccccccccccccccccccccc Parametri Perple_X cccccccccccccccccccccccccccccccc
  file_perplexM='./Phase_changes/Mantle'                          !Nome file Perple_x per il mantello anidro
