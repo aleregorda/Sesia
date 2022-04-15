@@ -3156,13 +3156,12 @@ end subroutine Elemental_pressure
 ! call FastScape_Copy_Chi(chi)
  call FastScape_Copy_h(h)
 ! call FastScape_VTK(h,2.d0)
- print*,'h range:',minval(h),sum(h)/(nx*ny),maxval(h),minval(zt*h0),sum(zt*h0)/(nx*ny),maxval(zt*h0)
+! print*,'h range:',minval(h),sum(h)/(nx*ny),maxval(h),minval(zt*h0),sum(zt*h0)/(nx*ny),maxval(zt*h0)
 ! enddo
  zt=h/h0
 
  call FastScape_Debug()
  call FastScape_Destroy()
-
  deallocate(y,h,kf,kd)
 
  end subroutine Erosion

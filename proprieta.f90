@@ -60,7 +60,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 2
  i=2
@@ -99,7 +99,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 3
  i=3
@@ -138,7 +138,7 @@
  Cohe_M(i)=0.D0                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 4
  i=4
@@ -176,7 +176,7 @@
  Cohe_M(i)=1.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 5
  i=5
@@ -215,7 +215,7 @@
  Cohe_M(i)=0.D0                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 6
  i=6
@@ -254,7 +254,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 7
  i=7
@@ -292,7 +292,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 8
  i=8
@@ -330,7 +330,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 9
  i=9
@@ -368,7 +368,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 10
  i=10
@@ -407,7 +407,7 @@
  Cohe_M(i)=5.D06                                                  !Coesione iniziale
  Rw_f(i)=1.D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 11
  i=11
@@ -446,7 +446,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 12
  i=12
@@ -485,7 +485,7 @@
  Cohe_M(i)=2.D07                                                  !Coesione iniziale
  Rw_f(i)=7.5D0                                                       !Rapporto angolo di frizione per weakening
  Rw_c(i)=5.D0                                                       !Rapporto coesione per weakening
- Ws(i)=1.D0                                                       !Fattore di diminuzione viscosità per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 
 !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

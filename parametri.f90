@@ -9,14 +9,15 @@
  WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,file_perplexLC,&
  file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
  layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,dim_x_lg,dim_y_lg,&
- old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate)
+ old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,&
+ rho_press)
 
  Implicit none
 
  logical, intent(out) :: perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,&
  OUT_FILE_nl,OUT_FILE_nl_vtu,OUT_FILE_nl_it,vel_corr,runge_4,OUT_FILE_final_distribution,NEW_FILE_GRID,NEW_FILE_MARKERS,&
  MARKERS_CONSTANT,left_T,right_T,top_T,bottom_T,WEAK_SEED,courant_number,check_markers,eff_average,shear,adiabatic,solver_T,&
- parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing
+ parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press
 
  character(len=*), intent(out) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,&
  file_perplexO,file_perplexS,file_perplexSp,lgrid
@@ -44,29 +45,30 @@
  shear=.true.                                         !Utilizzo shear heating nell'equazione dell'energia
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
  healing=.false.                                            !Calcolo strain healing
+ rho_press=.false.                                            !Densità dipendente dalla pressione
  perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
- idratazione=.false.                                             !Utilizzo idratazione
+ idratazione=.true.                                             !Utilizzo idratazione
  serpentine=.true.                                             !Serpentinizzazione del mantello
  ocean=.false.                                             !Oceanizzazione del melting
  melting=.false.                                            !Utlizzo meccanismo di melting
  erosione=.true.                                            !Utilizzo meccanismo erosione/sedimentazione
- equilib=.false.                                       !Fase di riequilibrazione isostatica
+ equilib=.true.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='Initial_serpentine_sub_cold.wb'                                   !Nome file World Builder
+ file_world='Initial_serpentine_sub.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
- t_initial=20.D06                                               !Tempo iniziale
- t_final=30.D06                                               !Tempo finale
+ t_initial=0.D06                                               !Tempo iniziale
+ t_final=0.5D06                                               !Tempo finale
  Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/Serpentine_sub_wedge_erosione/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Isostatic/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -130,9 +132,9 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
-! file_grid='Griglia_serpentine_sub'               !Nome del file griglia
- file_grid='../Output_models/Sesia/Serpentine_sub_wedge/Isostatic/Griglia_final'               !Nome del file griglia
- NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
+ file_grid='Griglia_serpentine_sub'               !Nome del file griglia
+! file_grid='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Griglia_final'               !Nome del file griglia
+ NEW_FILE_GRID=.true.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
  LAYER_Y=3                                                !Numero settori con diversa altezza degli elementi lungo Y
@@ -158,9 +160,9 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
-! file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
- file_marc='../Output_models/Sesia/Serpentine_sub_wedge/Isostatic/Marcatori_final'                                        !Nome del file marcatori
- NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
+ file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
+! file_marc='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+ NEW_FILE_MARKERS=.true.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali
  marc_elem=16                                              !Numero di marcatori per elemento di minore dimensione
@@ -182,8 +184,8 @@
  eff_average=.false.                                    !Calcolo viscosità effettiva markers - .true. media armonica - .false. taglio visc. min e max
  it_max=100                                                       !Iterazioni massime power-law
  tol=1.D-03                                                  !Tolleranza convergenza power-law
- e0=0.05D0                                                  !Strain iniziale per weakening plastico
- e1=1.05D0                                                  !Strain finale per weakening plastico
+ e0=0.5D0                                                  !Strain iniziale per weakening plastico
+ e1=1.5D0                                                  !Strain finale per weakening plastico
  e0v=0.5D0                                                  !Strain iniziale per weakening viscoso
  e1v=1.5D0                                                  !Strain finale per weakening viscoso
  fv=1.D02                                               !Fattore di diminuzione della viscosità in presenza di acqua
@@ -201,8 +203,8 @@
 
 !ccccccccccccccccccccccccccccc Parametri per idratazione ccccccccccccccccccccccccccccc
  H2O_0=0.D0                                                  !Quantità iniziale di acqua nel mantello in wt%
- H2O_max=0.5D0                                                  !Quantità massima di acqua nel mantello in wt%
- H2O_serp=6.8D0                                                  !Quantità massima di acqua nel serpentino in wt%
+ H2O_max=0.D0                                                  !Quantità massima di acqua nel mantello in wt%
+ H2O_serp=0.D0                                                  !Quantità massima di acqua nel serpentino in wt%
 
 !ccccccccccccccccccccccccccccccc Parametri per melting ccccccccccccccccccccccccccccccc
  kappa_melt=60.D0                                 !Costante per il calcolo di deltaT
@@ -227,8 +229,8 @@
  esp_n=1.D0                                                 !Slope exponent in the SPL
  kappa_d=1.D-02                                                 !Bedrock transport coefficient (or diffusivity) for hillslope processes in m2/yr
  kappa_dsed=1.D-02                                                 !Sediments transport coefficient (or diffusivity) for hillslope processes in m2/yr
- g_coeff=0.D0                                                  !Bedrock dimensionless deposition/transport coefficient for the enriched SPL
- gsed_coeff=0.D0                                                  !Sediments dimensionless deposition/transport coefficient for the enriched SPL
+ g_coeff=0.5D0                                                  !Bedrock dimensionless deposition/transport coefficient for the enriched SPL
+ gsed_coeff=0.5D0                                                  !Sediments dimensionless deposition/transport coefficient for the enriched SPL
  p_coeff=-1.D0                                                   !Slope exponent for multi-direction flow
 
 !ccccccccccccccccccccccccccc Parametri per sedimentazione cccccccccccccccccccccccccccc
