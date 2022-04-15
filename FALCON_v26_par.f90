@@ -3178,7 +3178,7 @@ end subroutine Elemental_pressure
 
  call FastScape_Get_Step(istep)
 
- do while (istep<nstep)
+ do while (istep.lt.nstep+1)
    call FastScape_Execute_Step()
    call FastScape_Get_Step(istep)
    call FastScape_Copy_h(h)

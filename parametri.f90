@@ -134,7 +134,7 @@
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
  file_grid='Griglia_serpentine_sub'               !Nome del file griglia
 ! file_grid='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Griglia_final'               !Nome del file griglia
- NEW_FILE_GRID=.true.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
+ NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
  LAYER_Y=3                                                !Numero settori con diversa altezza degli elementi lungo Y
@@ -162,7 +162,7 @@
  THICK_AIR=0.D0                                               !Spessore sticky air
  file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
 ! file_marc='../Output_models/Sesia/Serpentine_sub_serp/Isostatic/Marcatori_final'                                        !Nome del file marcatori
- NEW_FILE_MARKERS=.true.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
+ NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali
  marc_elem=16                                              !Numero di marcatori per elemento di minore dimensione
