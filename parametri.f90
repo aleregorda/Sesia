@@ -68,7 +68,7 @@
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Compression_0-10Ma_2/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -78,7 +78,7 @@
  OUT_FILE_nl_vtu=.false.                                                     !Output file vtu per ogni iterazione non-lineare
  OUT_FILE_nl_it=.false.                                                     !Output file con numero iterazioni non-lineari
  OUT_FILE_final_distribution=.true.                                        !Output file con distribuzione finale nodi e marcatori
- MARKERS_VTU_OUT=.false.                                                  !Output file vtu per i marcatori
+ MARKERS_VTU_OUT=.true.                                                  !Output file vtu per i marcatori
  MARKERS_TXT_OUT=.false.                                                  !Output file txt per i marcatori
 
 !cccccccccccccccccccccccc Parametri della griglia Lagrangiana cccccccccccccccccccccccc
