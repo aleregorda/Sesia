@@ -68,7 +68,7 @@
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/Compression_0-10Ma_2/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Sesia/Compression_0-10Ma/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
