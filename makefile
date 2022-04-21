@@ -2,7 +2,7 @@
 
 include Makefile.machine
 
-CODE = FALCON_v26_par_prova_Sed_2.o
+CODE = FALCON_v27_par.o
 SUBROUTINE = parametri.o proprieta.o
 
 .f90.o:

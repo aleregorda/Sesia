@@ -9,4 +9,4 @@ cp proprieta_Garel.f90 proprieta.f90
 export OMP_NUM_THREADS=1
 
 make
-mpiexec -np 4 codice > output.code &
+mpiexec -np 4 codice > output.code 

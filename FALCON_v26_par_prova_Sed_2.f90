@@ -3144,7 +3144,7 @@ end subroutine Elemental_pressure
 
  double precision, parameter :: dtmax=2.5D03
  integer :: istep,nstep
- double precision :: dt0,x(nx*ny),y(nx*ny),h(nx*ny),u(nx*ny),kf(nx*ny),kd(nx*ny),e(nx,ny),er(nx,ny)
+ double precision :: dt0,x(nx*ny),y(nx*ny),h(nx*ny),u(nx*ny),kf(nx*ny),kd(nx*ny)
  integer, intent(in) :: nx,ny
  double precision, intent(in) :: h0,xl,yl,dt,xt(nx),ht(nx),ut(nx),kfsed,esp_m,esp_n,kdsed,g_coeff,gsed_coeff,p_coeff,&
  sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,kappa_d,kappa_f
@@ -3188,10 +3188,7 @@ end subroutine Elemental_pressure
    call FastScape_Execute_Step()
    call FastScape_Get_Step(istep)
    call FastScape_Copy_h(h)
-   call FastScape_Copy_Total_Erosion(e)
-   call FastScape_Copy_Erosion_Rate(er)
 !   print*,'h range:',minval(h),sum(h)/(nx*ny),maxval(h),minval(ht),sum(ht)/(nx),maxval(ht)
-   print*,'erosion:',minval(e),maxval(e),minval(er),maxval(er)
  enddo
  h_out=h(nx+1:nx*(ny-1))/h0
 

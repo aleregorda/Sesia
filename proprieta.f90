@@ -461,7 +461,7 @@
  Kc_M(i)=4.3D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D17                                                  !Viscosità minima
+ Visc_min(i)=1.D18                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.false.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
