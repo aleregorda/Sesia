@@ -57,18 +57,18 @@
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='Initial_serpentine_sub.wb'                                   !Nome file World Builder
+ file_world='Initial_Alboran.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
- t_final=10.D06                                               !Tempo finale
- Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
+ t_final=2.D06                                               !Tempo finale
+ Cn=0.5D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=2.5D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia/prova/'              !Directory in cui scrivere i file di output
+ OUT_DIR='../Output_models/Alboran/Compression_0-2Ma_v=10/'              !Directory in cui scrivere i file di output
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -78,7 +78,7 @@
  OUT_FILE_nl_vtu=.false.                                                     !Output file vtu per ogni iterazione non-lineare
  OUT_FILE_nl_it=.false.                                                     !Output file con numero iterazioni non-lineari
  OUT_FILE_final_distribution=.true.                                        !Output file con distribuzione finale nodi e marcatori
- MARKERS_VTU_OUT=.true.                                                  !Output file vtu per i marcatori
+ MARKERS_VTU_OUT=.false.                                                  !Output file vtu per i marcatori
  MARKERS_TXT_OUT=.false.                                                  !Output file txt per i marcatori
 
 !cccccccccccccccccccccccc Parametri della griglia Lagrangiana cccccccccccccccccccccccc
@@ -102,7 +102,7 @@
  Press_0=0.0D0                                                   !Pressione superficiale
 
 !cccccccccccccccccccccccccccc Boundary condition velocità cccccccccccccccccccccccccccc
- v_sx=1.D0                                                  !Velocità lato sinistro in cm/yr
+ v_sx=10.D0                                                  !Velocità lato sinistro in cm/yr
  v_dx=0.D0                                                  !Velocità lato destro in cm/yr
  left_v=3                                                 !BC lato sx - 1-open; 2-free-slip; 3-fixed
  right_v=3                                                 !BC lato dx - 1-open; 2-free-slip; 3-fixed
@@ -131,8 +131,8 @@
  cond(1)=1.65D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
-! file_grid='Griglia_serpentine_sub'               !Nome del file griglia
- file_grid='../Output_models/Sesia/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia_Alboran'               !Nome del file griglia
+ file_grid='../Output_models/Alboran/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -159,8 +159,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
-! file_marc='Marcatori_serpentine_sub'                                        !Nome del file marcatori
- file_marc='../Output_models/Sesia/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_Alboran'                                        !Nome del file marcatori
+ file_marc='../Output_models/Alboran/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=9                                            !Numero iniziale dei materiali

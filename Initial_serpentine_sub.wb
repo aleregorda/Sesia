@@ -58,7 +58,7 @@
 
     {"model":"continental plate", "name":"wedge", "min depth":0e3, "max depth":[[0e3,[[590e3,0e3]]],[10e3,[[600e3,0e3]]]],
      "coordinates":[[590e3,-1e3],[600e3,-1e3],[600e3,1e3],[590e3,1e3]],
-     "composition models":[{"model":"uniform", "compositions":[1], "max depth":[[0e3,[[540e3,0e3]]],[10e3,[[550e3,0e3]]]]}]},
+     "composition models":[{"model":"uniform", "compositions":[1], "max depth":[[0e3,[[590e3,0e3]]],[10e3,[[600e3,0e3]]]]}]},
                            
 //    {"model":"continental plate", "name":"wedge", "min depth":0e3, "max depth":[[0e3,[[530e3,0e3]]],[10e3,[[550e3,0e3]]]],
 //     "coordinates":[[530e3,-1e3],[550e3,-1e3],[550e3,1e3],[530e3,1e3]],

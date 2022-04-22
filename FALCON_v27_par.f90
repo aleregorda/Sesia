@@ -617,6 +617,7 @@ program FALCON
      if(nproc.gt.1)call mpi_bcast(div,elementi,MPI_DOUBLE,0,MPI_COMM_WORLD,ierr)
    enddo                                                                          !FINE CICLO PENALTY
    Press=Press+Press_0
+
 !c     7.2 - CALCOLO PRESSIONE SMOOTHED, CAMBI DI FASE, MELTING E VISCOSITA'
 
    if(iproc.eq.0)then
@@ -789,7 +790,7 @@ program FALCON
      call cpu_time(t1)
      print *,'- Energy solution:'
      print *,'  Facticulating...'
-     print *,'  Do not worry, it is much faster than momentum solution!'
+     if(power_law.and..not.equilib)print *,'  Do not worry, it is much faster than momentum solution!'
      allocate(K_loc(nodi_elem*ndofT,nodi_elem*ndofT),K_Mc(nodi_elem*ndofT,nodi_elem*ndofT),K_K(nodi_elem*ndofT,nodi_elem*ndofT))
      allocate(Load(nodi_elem*ndofT),N1(1,nodi_elem),N2(nodi_elem,1),NTT(nodi_elem,1),Vel1(1,ndof),Vel2(ndof,1),Tnodi(nodi_elem))
      open(unit=11,file='mumps_info_T',status='unknown')
