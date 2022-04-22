@@ -3042,6 +3042,8 @@ end subroutine Elemental_pressure
    endif
    if(e2t_p(i).gt.e1)e2t_p(i)=e1
    if(e2t_v(i).gt.e1v)e2t_v(i)=e1v
+   if(e2t_p(i).lt.0.D0)e2t_p(i)=0.D0
+   if(e2t_v(i).lt.0.D0)e2t_v(i)=0.D0
  enddo
 
  end subroutine Strain
