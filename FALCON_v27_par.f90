@@ -18,13 +18,14 @@ program FALCON
    n_elem_x,n_elem_y,WEAK_SEED,WEAK_TYPE,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,&
    file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
    layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,&
-   serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act)
+   serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act,&
+   OUT_MODEL,OUT_PHASE)
    logical, intent(out) :: perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,&
    OUT_FILE_nl,OUT_FILE_nl_vtu,OUT_FILE_nl_it,vel_corr,runge_4,OUT_FILE_final_distribution,NEW_FILE_GRID,NEW_FILE_MARKERS,&
    MARKERS_CONSTANT,left_T,right_T,top_T,bottom_T,WEAK_SEED,courant_number,check_markers,eff_average,shear,adiabatic,solver_T,parabolic_T,&
    markers_vtu_out,markers_txt_out,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press
    character(len=*), intent(out) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,&
-   file_perplexO,file_perplexS,file_perplexSp,lgrid
+   file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE
    integer, intent(out) :: ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,OUT_FILE_nb,init_num_mat,marc_elem,&
    left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T
    double precision, intent(out) :: t_final,v_sx,v_dx,Rhoref,Diff,Viscref,alpharef,Cpref,lito_sx,lito_dx,H2O_serp,&
@@ -39,15 +40,15 @@ program FALCON
  end interface
 
  interface
-   subroutine proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,&
-   Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,Rw_f,Rw_c,Ws,&
+   subroutine proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,grain_m,grain_p,t_lmantle,&
+   Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,teta_fr_inf,Cohe_inf,Ws,&
    diffusion,rheology,f_scale,t_wet,Visc_min,Visc_max,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,uniaxial)
-   integer, intent(out) :: num_mat,i,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,t_wet
+   integer, intent(out) :: num_mat,i,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,t_wet,t_lmantle
    character(len=*), dimension(:), allocatable, intent(out) :: materiale
    logical, dimension(:), allocatable, intent(out) :: diffusion,peierls,uniaxial
    integer, dimension(:), allocatable, intent(out) :: rheology
    double precision, dimension(:), allocatable, intent(out) :: Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,&
-   coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Rw_f,Rw_c,Ws,f_scale,Visc_min,Visc_max,Ea_pe,ndisl_pe,Va_pe,coeffA_pe
+   coeffA,Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,teta_fr_inf,Cohe_inf,Ws,f_scale,Visc_min,Visc_max,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,grain_m,grain_p
    end subroutine proprieta
  end interface
 
@@ -60,12 +61,14 @@ program FALCON
  courant_number,check_markers,eff_average,shear,adiabatic,solver_T,parabolic_T,markers_vtu_out,markers_txt_out,lagrangian_grid,old_lgrid,&
  serpentine,ocean,weak_plastic,healing,rho_press
 
- character(len=150) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,lgrid
+ character(len=150) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,&
+ lgrid,OUT_MODEL,OUT_PHASE
+
  integer :: i,j,k,indice,nodi,elementi,marcatori,ig,it,nt,ip,marcatoritot,ic,ikl,ilg,ill,indof1,indof2,ine1,ine2,t_lcont,nodi_x,nodi_y,&
  elem_x,elem_y,nproc,iproc,counter,chain,colonna,celle,celleP,t_cont,t_oc,t_mantle,t_serp,t_air,t_sed,t_wet,ierr,t_contM,t_ocM,t_mantleM,t_lcontM,&
  ic_max,ic_min,elem_x1,elem_x2,elem_x3,em,ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,num_mat,OUT_FILE_nb,riga,nl_out,&
  init_num_mat,marc_elem,left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,weak_type,marc_in,marc_agg,layer_T,elem_x_lg,elem_y_lg,&
- nodi_lg,elem_lg
+ nodi_lg,elem_lg,t_lmantle
 
  double precision :: altezza,larghezza,Tgauss,Veltot,x_max,x_min,y_max,y_min,dTX,dPX,minTX,minPX,dPXs,var_grid,dvolu,norm_dP,norm_P,&
  dt,dt0,tempo,D_mu(3,3),D_l(3,3),Ra,Rc,tau1,tau2,tau3,tau,h0,t0,v0,DTemp,lito_sx,lito_dx,transition_BC_sx,transition_BC_dx,Kcref,Href,&
@@ -84,8 +87,8 @@ program FALCON
  Rho,DRho,RhoC,Visc,Vx,Vy,Load,exx,eyy,exy,Press,Ptot_nodi,Ptot,div,Cp,alpha,Temp,BC_valT,Tnodi,Telem,Hs,s2,Ray,&
  e2t_p,e2t_v,e2t_ist,Pmarc,Tmarc,xmin_elem,ymin_elem,BC_val,Hr,Kc,Hd,Vy_elem,x_chain,y_chain,y_temp,W_e,W_b,Wmax_b,W_f,&
  melt_fraction,W_m,W_e_n,W_b_n,W_m_n,res_loc,res,Vel_old,exx_nodi,eyy_nodi,exy_nodi,e2_nodi,Vel,Pmarc_lito,Plito,Plito_nodi,&
- Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Tref_M,N,f_scale,&
- dpress,press_old,ptot_old,flux_sx,flux_dx,Load_g,Load_noBC,Visc_vp,Rw_f,Rw_c,Ws,thick_x,thick_y,weak_pos_x,weak_pos_y,weak_dim_x,weak_dim_y,&
+ Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,Tref_M,N,f_scale,grain_m,grain_p,&
+ dpress,press_old,ptot_old,flux_sx,flux_dx,Load_g,Load_noBC,Visc_vp,teta_fr_inf,Cohe_inf,Ws,thick_x,thick_y,weak_pos_x,weak_pos_y,weak_dim_x,weak_dim_y,&
  x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_m_a,melt_fraction_a,W_f_a,x_marc_tmp,y_marc_tmp,e2t_p_tmp,e2t_v_tmp,W_b_tmp,W_f_tmp,W_m_tmp,melt_fraction_tmp,&
  T_top,T_bot,y_top,y_bot,radio,cond,q_x,q_y,teta_elem,cohe_elem,e2t_p_elem,e2t_v_elem,x_lg,y_lg,Visc_min,Visc_max,melt_elem,Ea_pe,ndisl_pe,Va_pe,coeffA_pe
 
@@ -135,7 +138,7 @@ program FALCON
       WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,&
       courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,&
       markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,&
-      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act)
+      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act,OUT_MODEL,OUT_PHASE)
  call parametri_options(iproc,OUT_DIR,t_initial,t_final,Cn,time_step,max_time_step)
  if(equilib)then
    v_sx=0.D0
@@ -152,13 +155,13 @@ program FALCON
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
  if(iproc.eq.0)then
-   call proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,&
-        coeffAdf,teta_fr_M,Cohe_M,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,Rw_f,Rw_c,Ws,&
+   call proprieta(i,num_mat,materiale,Tref_M,Rho_M,Visc_M,alpha_M,Cp_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,grain_m,grain_p,t_lmantle,Eadf,Vadf,&
+        coeffAdf,teta_fr_0,Cohe_0,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,teta_fr_inf,Cohe_inf,Ws,&
         diffusion,rheology,f_scale,t_wet,Visc_min,Visc_max,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,uniaxial)
 
-   call system ('mkdir -p '//TRIM(OUT_DIR))
-   call system ('mkdir -p '//TRIM(OUT_DIR)//'vtu_files')
-   call system ('mkdir -p '//TRIM(OUT_DIR)//'txt_files')
+   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE))
+   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'vtu_files')
+   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'txt_files')
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !c     1 - LETTURA FILE GRIGLIA E TEMPERATURA INIZIALE
@@ -667,7 +670,7 @@ program FALCON
      do i=1,marcatori
        call melt(materiale(type_marc(i)),W_b_n(i),W_f(i),W_e_n(elem_marc(n_marc(i))),melt_fraction(i),Pmarc(i),Tmarc(i),&
             Rho_melt,Rho_M,alpha_M,Cp_M,Tref_M,num_mat,Cp_melt,alpha_melt,W_m(i),W_m_n(i),Wmax_b(i),kappa_melt,gamma,melting,&
-            chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,t_oc,t_mantleM,type_marc(i),H2O_0,H2O_max,perple_x,idratazione)
+            chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,t_oc,t_mantleM,t_lmantle,type_marc(i),H2O_0,H2O_max,perple_x,idratazione)
        call PerpleX(rho_press,Rho_X,Cp_X,alpha_X,Tmarc(i),Pmarc(i),materiale(type_marc(i)),dTX,dPX,minTX,minPX,RhoX,alphaX,CpX,dPXs,RhoXs,CpXs,alphaXs,&
             Rho_XC,celle,celleP,Cpref,alpharef,perple_x,Rho_M(type_marc(i)),Cp_M(type_marc(i)),alpha_M(type_marc(i)),Tref_M(type_marc(i)),&
             Rho_M(t_mantle))
@@ -677,11 +680,11 @@ program FALCON
             e2t_v_elem(elem_marc(n_marc(i))),melt_elem(elem_marc(n_marc(i))))
      enddo
      DRho=RhoC-Rhoref
-     if(power_law)call Viscosita(coeffA,ndisl,Va,Ea,Cohe_M,coeffAdf,Eadf,Vadf,teta_fr_M,num_mat,materiale,Rgas,elem_marc,pi,Visc_M,Visc_max,&
+     if(power_law)call Viscosita(coeffA,ndisl,Va,Ea,Cohe_0,coeffAdf,Eadf,Vadf,teta_fr_0,num_mat,materiale,Rgas,elem_marc,pi,Visc_M,grain_m,grain_p,Visc_max,&
                        Visc_min,C,elementi,media,Viscref,Visc,marcatori,marcatoritot,Pmarc,Tmarc,Visc_vp,n_marc,type_marc,e2t_p,e2t_v,e2t_ist,VV,W_b_n,&
-                       melt_fraction,Rw_f,Rw_c,Ws,e0,e1,e0v,e1v,alpham_dl,alpham_df,fv,OH_0,Pmarc_lito,diffusion,rheology,t_serp,elem_x,eff_average,f_scale,&
-                       uniaxial,teta_elem,cohe_elem,idratazione,t_wet,t_oc,serpentine,ocean,H2O_0,H2O_max,H2O_serp,perple_x,peierls,Ea_pe,ndisl_pe,Va_pe,&
-                       coeffA_pe)
+                       melt_fraction,teta_fr_inf,Cohe_inf,Ws,e0,e1,e0v,e1v,alpham_dl,alpham_df,fv,OH_0,Pmarc_lito,diffusion,rheology,t_serp,elem_x,eff_average,&
+                       f_scale,uniaxial,teta_elem,cohe_elem,idratazione,t_wet,t_oc,serpentine,ocean,H2O_0,H2O_max,H2O_serp,perple_x,peierls,Ea_pe,ndisl_pe,&
+                       Va_pe,coeffA_pe)
      if(equilib)Visc=1.D21/Viscref
      do i=1,elementi
        do k=1,nodi_elem
@@ -701,10 +704,10 @@ program FALCON
    norm_res=DSQRT(sum(res**2))
    if(ic.eq.1)norm_r0=DSQRT(sum(Load_g**2))
    if(OUT_FILE_nl_vtu.and.iproc.eq.0)call Output_nl_vtu(OUT_VEL,OUT_DIR,it,ic,elementi,nodi_elem,nodi,connessioni,x*h0,y*h0,Visc*Viscref,Ptot_nodi,&
-                                          DABS(Ptot_nodi-Ptot_old),Press_old,dPress,Vel*v0,DABS(Vel*v0-Vel_old*v0),res/norm_r0,ndof,e2_nodi)
+                                          DABS(Ptot_nodi-Ptot_old),Press_old,dPress,Vel*v0,DABS(Vel*v0-Vel_old*v0),res/norm_r0,ndof,e2_nodi,OUT_MODEL,OUT_PHASE)
    if(OUT_FILE_nl.and.iproc.eq.0)call Output_nl(OUT_VEL,OUT_DIR,it,ic,it_max,norm_res/norm_r0,norm_dvel/norm_vel,norm_dP/norm_P,&
-                                         MINVAL(Ptot-Plito),MAXVAL(Ptot-Plito),MINVAL(Press_old-Plito),MAXVAL(Press_old-Plito),&
-                                         MINVAL(Visc*Viscref),MAXVAL(Visc*Viscref),MINVAL(Vx*v0),MAXVAL(Vx*v0),MINVAL(Vy*v0),MAXVAL(Vy*v0))
+                                      MINVAL(Ptot-Plito),MAXVAL(Ptot-Plito),MINVAL(Press_old-Plito),MAXVAL(Press_old-Plito),&
+                                      MINVAL(Visc*Viscref),MAXVAL(Visc*Viscref),MINVAL(Vx*v0),MAXVAL(Vx*v0),MINVAL(Vy*v0),MAXVAL(Vy*v0),OUT_MODEL,OUT_PHASE)
    Vel_old=Vel
    Ptot_old=Ptot_nodi
    if(iproc.eq.0.and.ic.eq.10*nl_out.and.ic.lt.100.and.MAX(norm_res/norm_r0,norm_dvel/norm_vel).gt.tol)then
@@ -761,7 +764,7 @@ program FALCON
           Rho*Rhoref,Kc*Kcref,Telem*(Tb-Ts),Ptot,Plito,Ptot_nodi,x_marc*h0,y_marc*h0,n_marc,type_marc,VV,marcatori,e2_nodi,s2,Pmarc,Tmarc,e2t_p,e2t_v,&
           Hr*Href*Rho*Rhoref,Hs*Viscref/(t0**2),Hd*alpharef*(Tb-Ts)*Rhoref*Gy*v0,tempo,W_b,W_f,melt_fraction,alpha*alpharef,W_m,melting,perple_x,e2t_ist,&
           Visc_vp*Viscref,C,OUT_TYPE,nt,OUT_FILE_nb,it,-q_x*Kcref*(Tb-Ts)/h0,-q_y*Kcref*(Tb-Ts)/h0,power_law,teta_elem,cohe_elem,e2t_p_elem,e2t_v_elem,&
-          markers_vtu_out,markers_txt_out,type_elem,def_elem,shear,adiabatic,solver_T,melt_elem)
+          markers_vtu_out,markers_txt_out,type_elem,def_elem,shear,adiabatic,solver_T,melt_elem,OUT_MODEL,OUT_PHASE)
           deallocate(type_elem,def_elem)
      if(lagrangian_grid)call Output_lgrid(it,tempo,x_lg*h0,y_lg*h0,OUT_TYPE,nodi_lg,elem_lg,conn_lg,dim_x_lg*h0,dim_y_lg*h0,em_lg)
      call cpu_time(t2)
@@ -770,9 +773,9 @@ program FALCON
    endif
    if(OUT_FILE_nl_it)then
      if(it.eq.1)then
-       open(unit=1,file=TRIM(OUT_DIR)//'Iterations_flux.txt',status='replace')
+       open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Iterations_flux.txt',status='replace')
      else
-       open(unit=1,file=TRIM(OUT_DIR)//'Iterations_flux.txt',status='old',position='append')
+       open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Iterations_flux.txt',status='old',position='append')
      endif
      write(1,*)it,tempo,ic-1,SUM(flux_sx),SUM(flux_dx)
      close(1)
@@ -917,7 +920,7 @@ program FALCON
    print *,'Done!'
    print *,''
    if(final_distribution)call Output_final(nodi,elementi,nodi_elem,layer_x,layer_y,thick_x*h0,thick_y*h0,n_elem_x,n_elem_y,connessioni,Temp*(Tb-Ts),&
-                              x*h0,y*h0,x_marc*h0,y_marc*h0,n_marc,marcatori,type_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,OUT_DIR)
+                              x*h0,y*h0,x_marc*h0,y_marc*h0,n_marc,marcatori,type_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,OUT_DIR,OUT_MODEL,OUT_PHASE)
 
    print *,'****************************************************************************************'
    print *,'----------------------------------- HAVE A NICE DAY!! ----------------------------------'
@@ -939,8 +942,8 @@ program FALCON
    if(perple_x)then
      deallocate(RhoX,CpX,alphaX,WX,RhoXs,CpXs,alphaXs,WXs)
    endif
-   deallocate(materiale,Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Tref_M,Rw_f,Rw_c,Ws,&
-              Visc_min,Visc_max,rheology,f_scale,diffusion,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,uniaxial)
+   deallocate(materiale,Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,Tref_M,teta_fr_inf,Cohe_inf,Ws,&
+              Visc_min,Visc_max,rheology,f_scale,diffusion,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,uniaxial,grain_m,grain_p)
  endif
  deallocate(thick_x,thick_y,n_elem_x,n_elem_y,weak_dim_x,weak_dim_y,weak_pos_x,weak_pos_y)
  deallocate(Ptot_old,Ptot_nodi,Vel_old,Vel,Vel_res)
@@ -2043,7 +2046,7 @@ end subroutine Elemental_pressure
 
  subroutine melt(materiale,W_b_n,W_f,W_e_n,melt_fraction,Pmarc,Tmarc,Rho_melt,Rho_M,alpha_M,Cp_M,Tref_M,&
  num_mat,Cp_melt,alpha_melt,W_m,W_m_n,Wmax_b,kappa,gamma,melting,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol,Hl,&
- t_oc,t_mantleM,type_marc,H2O_0,H2O_max,perple_x,idratazione)
+ t_oc,t_mantleM,t_lmantle,type_marc,H2O_0,H2O_max,perple_x,idratazione)
 
  Implicit none
 
@@ -2052,7 +2055,7 @@ end subroutine Elemental_pressure
  double precision, external :: molten,delta,roots
  logical, intent(in) :: melting,perple_x,idratazione
  character(len=*), intent(in) :: materiale
- integer, intent(in) :: num_mat,t_oc,t_mantleM
+ integer, intent(in) :: num_mat,t_oc,t_mantleM,t_lmantle
  double precision, intent(in) :: Pmarc,Tmarc,Rho_M(num_mat),alpha_M(num_mat),Tref_M(num_mat),Cp_M(num_mat),W_m,&
  kappa,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol,Hl,H2O_0,H2O_max
 
@@ -2112,7 +2115,7 @@ end subroutine Elemental_pressure
          Cp_melt=Cp_M(type_marc)+((Hl*melt_fraction)/dT)
          alpha_melt=alpha_M(type_marc)+((Rho_melt*Hl*melt_fraction)/dP)
        elseif(melt_fraction.eq.0.D0.and.type_marc.eq.t_mantleM)then
-         type_marc=t_mantle
+         type_marc=t_lmantle
        endif
      endif
    endif
@@ -2254,9 +2257,9 @@ end subroutine Elemental_pressure
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
- subroutine Viscosita(coeffA,ndisl,Va,Ea,Cohe_M,coeffAdf,Eadf,Vadf,teta_fr_M,num_mat,materiale,Rgas,elem_marc,pi,Visc_M,&
+ subroutine Viscosita(coeffA,ndisl,Va,Ea,Cohe_0,coeffAdf,Eadf,Vadf,teta_fr_0,num_mat,materiale,Rgas,elem_marc,pi,Visc_M,grain_m,grain_p,&
  Visc_max,Visc_min,C,elementi,media,Viscref,Visc,marcatori,marcatoritot,Pmarc,Tmarc,Visc_eff,n_marc,type_marc,e2t_p,e2t_v,e2t_ist,VV,&
- W_b,melt_fraction,Rw_f,Rw_c,Ws,e0,e1,e0v,e1v,alpham_dl,alpham_df,fv,OH_0,Pmarc_lito,diffusion,rheology,t_serp,elem_x,eff_average,f_scale,&
+ W_b,melt_fraction,teta_fr_inf,Cohe_inf,Ws,e0,e1,e0v,e1v,alpham_dl,alpham_df,fv,OH_0,Pmarc_lito,diffusion,rheology,t_serp,elem_x,eff_average,f_scale,&
  uniaxial,teta_elem,cohe_elem,idratazione,t_wet,t_oc,serpentine,ocean,H2O_0,H2O_max,H2O_serp,perple_x,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe)
 
  Implicit none
@@ -2267,11 +2270,11 @@ end subroutine Elemental_pressure
  integer, intent(in) :: elementi,num_mat,marcatori,n_marc(marcatori),marcatoritot,elem_marc(marcatoritot),C(elementi),rheology(num_mat),&
  t_serp,elem_x,t_wet,t_oc
 
- double precision, intent(in) :: coeffA(num_mat),ndisl(num_mat),Va(num_mat),Ea(num_mat),Cohe_M(num_mat),coeffAdf(num_mat),&
- Eadf(num_mat),Vadf(num_mat),teta_fr_M(num_mat),Visc_M(num_mat),Rgas,pi,Visc_max(num_mat),Visc_min(num_mat),Viscref,&
+ double precision, intent(in) :: coeffA(num_mat),ndisl(num_mat),Va(num_mat),Ea(num_mat),Cohe_0(num_mat),coeffAdf(num_mat),&
+ Eadf(num_mat),Vadf(num_mat),teta_fr_0(num_mat),Visc_M(num_mat),Rgas,pi,Visc_max(num_mat),Visc_min(num_mat),Viscref,&
  W_b(marcatori),Tmarc(marcatori),Pmarc(marcatori),e2t_ist(marcatori),melt_fraction(marcatori),e0,e1,e0v,e1v,alpham_dl,alpham_df,fv,OH_0,&
- Rw_f(num_mat),Rw_c(num_mat),Ws(num_mat),f_scale(num_mat),Pmarc_lito(marcatori),H2O_0,H2O_max,H2O_serp,Ea_pe(num_mat),ndisl_pe(num_mat),&
- Va_pe(num_mat),coeffA_pe(num_mat)
+ teta_fr_inf(num_mat),Cohe_inf(num_mat),Ws(num_mat),f_scale(num_mat),Pmarc_lito(marcatori),H2O_0,H2O_max,H2O_serp,Ea_pe(num_mat),ndisl_pe(num_mat),&
+ Va_pe(num_mat),coeffA_pe(num_mat),grain_m(num_mat),grain_p(num_mat)
 
  character(len=*), intent(in) :: media,materiale(num_mat)
  integer, intent(out) :: VV(marcatori)
@@ -2304,11 +2307,12 @@ end subroutine Elemental_pressure
       elem_marc(n_marc(i)).gt.elementi-elem_x))type_marc(i)=t_oc
    if(.not.perple_x.and.idratazione.and.Tmarc(i).gt.(751.D0+(0.18D0*Pmarc(i)/1.D06)-(3.1D-05*(Pmarc(i)/1.D06)**2)).and.&
       type_marc(i).eq.t_serp)type_marc(i)=t_wet
-   Visc_dl=f_scale(type_marc(i))*(1.D0/(Wv*(coeffA(type_marc(i))**(1.D0/ndisl(type_marc(i))))))*&
+   Visc_dl=0.5D0*f_scale(type_marc(i))*(1.D0/(Wv*(coeffA(type_marc(i))**(1.D0/ndisl(type_marc(i))))))*&
            (e2t_ist(i)**((1.D0-ndisl(type_marc(i)))/(1.D0*ndisl(type_marc(i)))))*DEXP((Ea(type_marc(i))+&
            Va(type_marc(i))*Pmarc(i))/(ndisl(type_marc(i))*Rgas*Tmarc(i)))*DEXP(alpham_dl*melt_fraction(i))
-   Visc_df=(1.D0/(Wv*coeffAdf(type_marc(i))))*DEXP((Eadf(type_marc(i))+Vadf(type_marc(i))*Pmarc(i))/(Rgas*Tmarc(i)))*DEXP(alpham_df*melt_fraction(i))
-   Visc_pe=(1.D0/(Wv*(coeffA_pe(type_marc(i))**(1.D0/ndisl_pe(type_marc(i))))))*&
+   Visc_df=0.5D0*((grain_m(type_marc(i))**grain_p(type_marc(i)))/(Wv*coeffAdf(type_marc(i))))*DEXP((Eadf(type_marc(i))+Vadf(type_marc(i))*Pmarc(i))/&
+           (Rgas*Tmarc(i)))*DEXP(alpham_df*melt_fraction(i))
+   Visc_pe=0.5D0*(1.D0/(Wv*(coeffA_pe(type_marc(i))**(1.D0/ndisl_pe(type_marc(i))))))*&
            (e2t_ist(i)**((1.D0-ndisl_pe(type_marc(i)))/(1.D0*ndisl_pe(type_marc(i)))))*DEXP((Ea_pe(type_marc(i))+&
            Va_pe(type_marc(i))*Pmarc(i))/(ndisl_pe(type_marc(i))*Rgas*Tmarc(i)))
    if(uniaxial(type_marc(i)))then
@@ -2329,14 +2333,14 @@ end subroutine Elemental_pressure
      Visc_pe=Visc_pe*((1.D0-(1.D0/fv))*DEXP(-water/OH_0)+(1.D0/fv))
    endif
    if(e2t_p(i).le.e1.and.e2t_p(i).ge.e0)then
-     teta_fr=teta_fr_M(type_marc(i))+((teta_fr_M(type_marc(i))/Rw_f(type_marc(i)))-teta_fr_M(type_marc(i)))*((e2t_p(i)-e0)/(e1-e0))
-     Cohe=Cohe_M(type_marc(i))+((Cohe_M(type_marc(i))/Rw_c(type_marc(i)))-Cohe_M(type_marc(i)))*((e2t_p(i)-e0)/(e1-e0))
+     teta_fr=teta_fr_0(type_marc(i))+(teta_fr_inf(type_marc(i))-teta_fr_0(type_marc(i)))*((e2t_p(i)-e0)/(e1-e0))
+     Cohe=Cohe_0(type_marc(i))+(Cohe_inf(type_marc(i))-Cohe_0(type_marc(i)))*((e2t_p(i)-e0)/(e1-e0))
    elseif(e2t_p(i).gt.e1)then
-     teta_fr=(teta_fr_M(type_marc(i))/Rw_f(type_marc(i)))
-     Cohe=(Cohe_M(type_marc(i))/Rw_c(type_marc(i)))
+     teta_fr=teta_fr_inf(type_marc(i))
+     Cohe=Cohe_inf(type_marc(i))
    else
-     teta_fr=teta_fr_M(type_marc(i))
-     Cohe=Cohe_M(type_marc(i))
+     teta_fr=teta_fr_0(type_marc(i))
+     Cohe=Cohe_0(type_marc(i))
    endif
    yield=Cohe*DCOS(teta_fr*pi/180.D0)+Pmarc(i)*DSIN(teta_fr*pi/180.D0)
    Visc_pl=yield/(2.D0*e2t_ist(i))
@@ -2409,7 +2413,8 @@ end subroutine Elemental_pressure
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
- subroutine Output_nl_vtu(OUT_VEL,OUT_DIR,it,ic,elementi,nodi_elem,nodi,connessioni,x,y,Visc,Ptot,dPtot,Press_old,dPress,Vel0,dvel0,res,ndof,e2_nodi)
+ subroutine Output_nl_vtu(OUT_VEL,OUT_DIR,it,ic,elementi,nodi_elem,nodi,connessioni,x,y,Visc,Ptot,dPtot,Press_old,dPress,Vel0,dvel0,res,ndof,e2_nodi,&
+ OUT_MODEL,OUT_PHASE)
 
  Implicit none
 
@@ -2421,7 +2426,7 @@ end subroutine Elemental_pressure
  e2_nodi(nodi),Vel0(nodi*ndof),dvel0(nodi*ndof)
 
  logical, intent(in) :: OUT_VEL
- character(len=*), intent(in) :: OUT_DIR
+ character(len=*), intent(in) :: OUT_DIR,OUT_MODEL,OUT_PHASE
 
  if(OUT_VEL)then
    Vel=Vel0*1.D02*365.D0*24.D0*3600.D0
@@ -2432,7 +2437,7 @@ end subroutine Elemental_pressure
  endif
 
  write(filename,'("vtu_files/Convergence.",I2.2,".",I3.3,".vtu")')it,ic
- open(unit=1,file=TRIM(OUT_DIR)//filename,status='unknown',form='formatted')
+ open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,*) '<VTKFile type="UnstructuredGrid" version="0.1" byte_order="BigEndian">'
@@ -2518,14 +2523,15 @@ end subroutine Elemental_pressure
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
- subroutine Output_nl(OUT_VEL,OUT_DIR,it,ic,it_max,res,vel,press,Pn_min,Pn_max,Pe_min,Pe_max,visc_min,visc_max,Vx0_min,Vx0_max,Vy0_min,Vy0_max)
+ subroutine Output_nl(OUT_VEL,OUT_DIR,it,ic,it_max,res,vel,press,Pn_min,Pn_max,Pe_min,Pe_max,visc_min,visc_max,Vx0_min,Vx0_max,Vy0_min,Vy0_max,&
+ OUT_MODEL,OUT_PHASE)
 
  implicit none
 
  double precision :: Vx_min,Vx_max,Vy_min,Vy_max
  integer, intent(in) :: it,ic,it_max
  double precision, intent(in) :: res,press,Pn_min,Pn_max,Pe_min,Pe_max,visc_min,visc_max,vel,Vx0_min,Vx0_max,Vy0_min,Vy0_max
- character(len=*), intent(in) :: OUT_DIR
+ character(len=*), intent(in) :: OUT_DIR,OUT_MODEL,OUT_PHASE
  logical, intent(in) :: OUT_VEL
 
  if(OUT_VEL)then
@@ -2541,11 +2547,11 @@ end subroutine Elemental_pressure
  endif
 
  if(it.eq.1.and.ic.eq.1)then
-   open(unit=1,file=TRIM(OUT_DIR)//'Residuals.txt',status='replace')
-   open(unit=2,file=TRIM(OUT_DIR)//'MinMax.txt',status='replace')
+   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Residuals.txt',status='replace')
+   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'MinMax.txt',status='replace')
  else
-   open(unit=1,file=TRIM(OUT_DIR)//'Residuals.txt',status='old',position='append')
-   open(unit=2,file=TRIM(OUT_DIR)//'MinMax.txt',status='old',position='append')
+   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Residuals.txt',status='old',position='append')
+   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'MinMax.txt',status='old',position='append')
  endif
  write(1,*)DBLE(it)+DBLE(ic)/(1.5D0*it_max),res,vel,press
  write(2,*)DBLE(it)+DBLE(ic)/(1.5D0*it_max),Pn_min,Pn_max,Pe_min,Pe_max,visc_min,visc_max,Vx_min,Vx_max,Vy_min,Vy_max
@@ -2582,7 +2588,7 @@ end subroutine Elemental_pressure
  subroutine Output(OUT_VEL,OUT_DIR,elementi,nodi_elem,nodi,connessioni,x,y,x_elem,y_elem,Temp,Vx0,Vy0,v0,Cp,Visc,Rho,Kc,Telem,Ptot,&
  Plito,Ptot_nodi,x_marc,y_marc,n_marc,type_marc,VV,marcatori,e2_nodi,s2,Pmarc,Tmarc,e2t_p,e2t_v,Hr,Hs,Hd,tempo,W_b,W_f,melt_fraction,alpha,W_m,melting,&
  perple_x,e2t_ist,Visc_m,comp,OUT_TYPE,nt,OUT_FILE_nb,it,q_x,q_y,power_law,teta,cohe,e2t_p_elem,e2t_v_elem,markers_vtu_out,markers_txt_out,type_elem,def_elem,&
- shear,adiabatic,solver_T,melt_elem)
+ shear,adiabatic,solver_T,melt_elem,OUT_MODEL,OUT_PHASE)
 
  Implicit none
  
@@ -2590,7 +2596,7 @@ end subroutine Elemental_pressure
  integer, parameter :: vertype=1
  integer :: i,j,name
  double precision :: Vx(nodi),Vy(nodi)
- character(len=*), intent(in) :: OUT_DIR
+ character(len=*), intent(in) :: OUT_DIR,OUT_MODEL,OUT_PHASE
  logical, intent(in) :: OUT_VEL,melting,perple_x,OUT_TYPE,power_law,markers_vtu_out,markers_txt_out,shear,adiabatic,solver_T
  integer, intent(in) :: it,nodi,elementi,nodi_elem,connessioni(elementi,nodi_elem),marcatori,n_marc(marcatori),type_marc(marcatori),&
  VV(marcatori),comp(elementi),OUT_FILE_nb,type_elem(elementi),def_elem(elementi)
@@ -2614,7 +2620,7 @@ end subroutine Elemental_pressure
  if(.not.OUT_TYPE)name=it-1
 
  write(filename,'("vtu_files/Solution.",I5.5,".vtu")')name
- open(unit=1,file=TRIM(OUT_DIR)//filename,status='unknown',form='formatted')
+ open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,104) tempo
@@ -2644,7 +2650,7 @@ end subroutine Elemental_pressure
    write(1,*) Ptot_nodi(i)
  enddo
  write(filename,'("txt_files/Nodi.",i5.5,".txt")')name
- open(unit=2,file=TRIM(OUT_DIR)//filename,status='unknown')
+ open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
  write(2,108) tempo
  write(2,2002)
  write(1,*) '</DataArray>'
@@ -2660,7 +2666,7 @@ end subroutine Elemental_pressure
  close(2)
 
  write(filename,'("txt_files/Elementi.",i5.5,".txt")')name
- open(unit=2,file=TRIM(OUT_DIR)//filename,status='unknown')
+ open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
  write(2,108) tempo
  write(2,2001)
  write(1,*) '<CellData Scalars="scalars">'
@@ -2806,7 +2812,7 @@ end subroutine Elemental_pressure
 
  if(markers_vtu_out)then
    write(filename,'("vtu_files/Markers.",I5.5,".vtk")')name
-   open(unit=1,file=TRIM(OUT_DIR)//filename,status='unknown')
+   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
    write(1,107) tempo
    write(1,101)
    write(1,109)
@@ -2815,7 +2821,7 @@ end subroutine Elemental_pressure
  endif
  if(markers_txt_out)then
    write(filename,'("txt_files/Marcatori.",i5.5,".txt")')name
-   open(unit=2,file=TRIM(OUT_DIR)//filename,status='unknown')
+   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
    write(2,108) tempo
    write(2,2003)
  endif
@@ -2975,7 +2981,7 @@ end subroutine Elemental_pressure
  elem_g=COUNT(inside)
 
  write(filename,'("vtu_files/Grid.",I5.5,".vtu")')name
- open(unit=1,file=TRIM(OUT_DIR)//filename,status='unknown',form='formatted')
+ open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,104) tempo
@@ -3687,7 +3693,7 @@ end subroutine Elemental_pressure
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
  subroutine Output_final(nodi,elementi,nodi_elem,layer_x,layer_y,thick_x,thick_y,n_elem_x,n_elem_y,connessioni,Temp,x,y,&
- x_marc,y_marc,n_marc,marcatori,type_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,OUT_DIR)
+ x_marc,y_marc,n_marc,marcatori,type_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,OUT_DIR,OUT_MODEL,OUT_PHASE)
 
  Implicit none
  
@@ -3698,9 +3704,9 @@ end subroutine Elemental_pressure
  double precision, intent(in) :: x(nodi),y(nodi),thick_x(layer_x),thick_y(layer_y),Temp(nodi),x_marc(marcatori),y_marc(marcatori),&
  e2t_p(marcatori),e2t_v(marcatori),W_b(marcatori),W_f(marcatori),W_m(marcatori),melt_fraction(marcatori)
 
- character(len=*), intent(in) :: OUT_DIR
+ character(len=*), intent(in) :: OUT_DIR,OUT_MODEL,OUT_PHASE
 
- open(unit=1,file=TRIM(OUT_DIR)//'Griglia_final',status='unknown') 
+ open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Griglia_final',status='unknown') 
  write(1,1000)
  write(1,'(i10,1x,20(f15.5,i10))')layer_x,(thick_x(i),n_elem_x(i),i=1,layer_x)
  write(1,'(i10,1x,20(f15.5,i10))')layer_y,(thick_y(i),n_elem_y(i),i=1,layer_y)
@@ -3715,7 +3721,7 @@ end subroutine Elemental_pressure
  enddo
  close(1)
 
- open(unit=1,file=TRIM(OUT_DIR)//'Marcatori_final',status='unknown') 
+ open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Marcatori_final',status='unknown') 
  rewind(1)
  write(1,*)'Marcatori totali'
  write(1,*)marcatori
