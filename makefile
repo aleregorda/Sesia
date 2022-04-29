@@ -3,11 +3,11 @@
 include Makefile.machine
 
 CODE = FALCON_v27_par.o
-SUBROUTINE = parametri.o proprieta.o
+SUBROUTINE = parametri.o proprieta.o parametri_options.o
 
 .f90.o:
 	$(F90) $(INCLUDE) $(OPTF) $(FLAGS) $*.f90
 
 code:	$(CODE) $(SUBROUTINE)
-	$(F90) $(OPTF) $(CODE) $(SUBROUTINE) $(LIBS) -o codice
+	$(F90) $(OPTF) $(CODE) $(SUBROUTINE) $(LIBS) -o falcon
 	${RM} $*.o

@@ -75,7 +75,7 @@ program FALCON
  p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,kappa_fsed,kappa_dsed,Diss,e2rdm,thick_air,time_step,t_initial,&
  dim_x_lg,dim_y_lg,Press_0,H2O_serp,weak,e0w,e1w,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
 
- logical, dimension(:), allocatable :: BC_fix,BC_fixT,diffusion,inside,peierls,uniaxial
+ logical, dimension(:), allocatable :: BC_fix,BC_fixT,diffusion,inside,peierls,uniaxial,sed_layer
  character(len=50), dimension(:), allocatable ::materiale
  integer, dimension(:), allocatable :: type_marc,n_marc,C,elem_marc,nmin,nmax,VV,rheology,n_elem_x,n_elem_y,marc_in_elem, n_marc_a,type_marc_a,&
  elem_marc_a,n_marc_tmp,type_marc_tmp,elem_marc_tmp,type_elem,def_elem,em_lg
@@ -84,7 +84,7 @@ program FALCON
  Rho,DRho,RhoC,Visc,Vx,Vy,Load,exx,eyy,exy,Press,Ptot_nodi,Ptot,div,Cp,alpha,Temp,BC_valT,Tnodi,Telem,Hs,s2,Ray,&
  e2t_p,e2t_v,e2t_ist,Pmarc,Tmarc,xmin_elem,ymin_elem,BC_val,Hr,Kc,Hd,Vy_elem,x_chain,y_chain,y_temp,W_e,W_b,Wmax_b,W_f,&
  melt_fraction,W_m,W_e_n,W_b_n,W_m_n,res_loc,res,Vel_old,exx_nodi,eyy_nodi,exy_nodi,e2_nodi,Vel,Pmarc_lito,Plito,Plito_nodi,&
- Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Tref_M,N,f_scale,sed_layer,&
+ Rho_M,Cp_M,alpha_M,Visc_M,Hr_M,Kc_M,ndisl,Ea,Va,coeffA,Eadf,Vadf,coeffAdf,teta_fr_M,Cohe_M,Tref_M,N,f_scale,&
  dpress,press_old,ptot_old,flux_sx,flux_dx,Load_g,Load_noBC,Visc_vp,Rw_f,Rw_c,Ws,thick_x,thick_y,weak_pos_x,weak_pos_y,weak_dim_x,weak_dim_y,&
  x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_m_a,melt_fraction_a,W_f_a,x_marc_tmp,y_marc_tmp,e2t_p_tmp,e2t_v_tmp,W_b_tmp,W_f_tmp,W_m_tmp,melt_fraction_tmp,&
  T_top,T_bot,y_top,y_bot,radio,cond,q_x,q_y,teta_elem,cohe_elem,e2t_p_elem,e2t_v_elem,x_lg,y_lg,Visc_min,Visc_max,melt_elem,Ea_pe,ndisl_pe,Va_pe,coeffA_pe
@@ -119,6 +119,12 @@ program FALCON
 !c     PARAMETRI DEL SISTEMA
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
+ if(iproc.eq.0)then
+   print *,'****************************************************************************************'
+   print *,'------------------------------------- START PROGRAM ------------------------------------'
+   print *,'****************************************************************************************'
+ endif
+
  call parametri(t_final,v_sx,v_dx,Rhoref,Cpref,Diff,Viscref,alpharef,lito_sx,lito_dx,transition_BC_sx,&
       transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,e0v,e1v,fv,OH_0,alpham_dl,&
       alpham_df,esp_m,esp_n,OUT_DIR,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,perple_x,idratazione,free_surface,&
@@ -130,6 +136,7 @@ program FALCON
       courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,&
       markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,&
       ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act)
+ call parametri_options(iproc,OUT_DIR,t_initial,t_final,Cn,time_step,max_time_step)
  if(equilib)then
    v_sx=0.D0
    v_dx=0.D0
@@ -157,9 +164,6 @@ program FALCON
 !c     1 - LETTURA FILE GRIGLIA E TEMPERATURA INIZIALE
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-   print *,'****************************************************************************************'
-   print *,'------------------------------------- START PROGRAM ------------------------------------'
-   print *,'****************************************************************************************'
    if(NEW_FILE_GRID)then
      allocate(x((SUM(n_elem_x)+1)*(SUM(n_elem_y)+1)),y((SUM(n_elem_x)+1)*(SUM(n_elem_y)+1)))
      call Create_grid(layer_x,layer_y,n_elem_x,n_elem_y,SUM(n_elem_x)+1,SUM(n_elem_y)+1,(SUM(n_elem_x)+1)*(SUM(n_elem_y)+1),SUM(n_elem_x),SUM(n_elem_y),&
@@ -882,7 +886,7 @@ program FALCON
    if(check_markers)call Add_remove_markers(free_surface,elementi,nmin,nmax,nodi,nodi_elem,connessioni,marc_each_elem,marcatori,marcatoritot,n_marc,type_marc,&
                          delta_x,xmin_elem,ymin_elem,ymax_elem,x,y,x_marc,y_marc,larghezza,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,C,n_marc_a,type_marc_a,&
                          elem_marc_a,x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg,erosione,elem_x,elem_y,t_sed,&
-                         equilib,sed_layer,altezza)
+                         equilib,sed_layer)
    deallocate(n_marc,type_marc,elem_marc,x_marc,y_marc,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction)
    allocate(n_marc(marc_in+marc_agg),type_marc(marc_in+marc_agg),elem_marc(marcatoritot+marc_agg),x_marc(marc_in+marc_agg),y_marc(marc_in+marc_agg),&
             e2t_p(marc_in+marc_agg),e2t_v(marc_in+marc_agg),W_b(marc_in+marc_agg),W_f(marc_in+marc_agg),W_m(marc_in+marc_agg),melt_fraction(marc_in+marc_agg))
@@ -1979,7 +1983,7 @@ end subroutine Elemental_pressure
      Wmax_b(i)=Wmax_S
    else
      Wmax_b(i)=0.D0
-   endif
+   endif   
    if(materiale(type_marc(i)).eq.'serpentine'.and.(VV(i).eq.4.and.e2t(i).ge.e0.and.Pmarc_lito(i).lt.3.D08).or.&
      (elem_marc(n_marc(i)).gt.elementi-elem_x))then
      Wmax_b(i)=Wmax_S
@@ -3060,6 +3064,8 @@ end subroutine Elemental_pressure
  integer :: i,j,k,colonna,riga
  double precision :: vx_chain(chain),vy_chain(chain),x_chain_temp(chain),y_chain_temp(chain),xc,yc,N(nodi_elem),x_temp(nodi_x),y_temp(nodi_x),y0(nodi_x),&
  y_up_tmp(nodi_x),y_uplift(nodi_x),dy,dy_sed(nodi_x)
+
+ logical, intent(in) :: erosione,free_surface
  integer, intent(in) :: nodi,nodi_x,nodi_y,elementi,nodi_elem,connessioni(elementi,nodi_elem),chain,elem_x,elem_y,&
  layer_x,layer_y,n_elem_x(layer_x),n_elem_y(layer_y)
  
@@ -3067,10 +3073,10 @@ end subroutine Elemental_pressure
  ymin_elem(elementi),esp_m,esp_n,kappa_f,kappa_d,x_min,x_max,y_min,y_max,g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,&
  zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,kappa_fsed,kappa_dsed,thick_x(layer_x),thick_y(layer_y)
 
- logical, intent(in) :: erosione,free_surface
- double precision, intent(out) :: sed_layer(elem_x)
+ logical, intent(out) :: sed_layer(elem_x)
  double precision, intent(inout) :: x_chain(chain),y_chain(chain),y(nodi),delta_y(elementi)
 
+ sed_layer=.false.
  if(free_surface)then
    do i=nodi_x*(nodi_y-1)+1,nodi
      y_up_tmp(i-nodi_x*(nodi_y-1))=y(i)+Vy(i)*dt
@@ -3099,7 +3105,7 @@ end subroutine Elemental_pressure
    enddo
    do j=1,elem_y
      do i=1,elem_x
-       if(j.eq.elem_y)sed_layer(i)=(dy_sed(i)+dy_sed(i+1))/2.D0
+       if(j.eq.elem_y.and.(dy_sed(i)+dy_sed(i+1))/2.D0.gt.0.D0)sed_layer(i)=.true.
        indice=elem_x*(j-1)+i
        delta_y(indice)=DABS((y(connessioni(indice,4))-y(connessioni(indice,1)))+(y(connessioni(indice,3))-y(connessioni(indice,2))))/2.D0
      enddo
@@ -3436,20 +3442,20 @@ end subroutine Elemental_pressure
 
  subroutine Add_remove_markers(free_surface,elementi,nmin,nmax,nodi,nodi_elem,connessioni,marc_in_elem,marcatori,marcatoritot,n_marc,type_marc,&
  delta_x,xmin_elem,ymin_elem,ymax_elem,x,y,x_marc,y_marc,larghezza,e2t_p,e2t_v,W_b,W_f,W_m,melt_fraction,C,n_marc_a,type_marc_a,elem_marc_a,&
- x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg,erosione,elem_x,elem_y,t_sed,equilib,sed_layer,altezza)
+ x_marc_a,y_marc_a,e2t_p_a,e2t_v_a,W_b_a,W_f_a,W_m_a,melt_fraction_a,marc_in,marc_agg,erosione,elem_x,elem_y,t_sed,equilib,sed_layer)
 
  Implicit none
 
  logical :: sed_mark
- integer :: i,j,k,kk,pos,in_elem,missed,plus,flag
+ integer :: i,j,ii,jj,k,kk,pos,in_elem,missed,plus,flag
  double precision :: dist,distmin,xx,yy,ymin,ymax,xmarc,ymarc,y_sed,dy
- logical, intent(in) :: free_surface,erosione,equilib
+ logical, intent(in) :: free_surface,erosione,equilib,sed_layer(elem_x)
  integer, intent(in) :: elementi,nmin(elementi),nmax(elementi),nodi,nodi_elem,connessioni(elementi,nodi_elem),marc_in_elem(elementi,MAXVAL(nmax*2)),&
  marcatori,marcatoritot,n_marc(marcatori),type_marc(marcatori),elem_x,elem_y,t_sed
 
  double precision :: distm(MAXVAL(nmax)),xtmp(MAXVAL(nmax)),ytmp(MAXVAL(nmax))
- double precision, intent(in) :: delta_x(elementi),xmin_elem(elementi),ymin_elem(elementi),ymax_elem(elementi),x(nodi),y(nodi),x_marc(marcatori),altezza,&
- y_marc(marcatori),larghezza,e2t_p(marcatori),e2t_v(marcatori),W_b(marcatori),W_f(marcatori),W_m(marcatori),melt_fraction(marcatori),sed_layer(elem_x)
+ double precision, intent(in) :: delta_x(elementi),xmin_elem(elementi),ymin_elem(elementi),ymax_elem(elementi),x(nodi),y(nodi),x_marc(marcatori),&
+ y_marc(marcatori),larghezza,e2t_p(marcatori),e2t_v(marcatori),W_b(marcatori),W_f(marcatori),W_m(marcatori),melt_fraction(marcatori)
 
  integer, intent(out) :: n_marc_a(SUM(nmin)),type_marc_a(SUM(nmin)),elem_marc_a(SUM(nmin))
  double precision, intent(out) :: x_marc_a(SUM(nmin)),y_marc_a(SUM(nmin)),e2t_p_a(SUM(nmin)),e2t_v_a(SUM(nmin)),W_b_a(SUM(nmin)),W_f_a(SUM(nmin)),&
@@ -3457,11 +3463,13 @@ end subroutine Elemental_pressure
 
  integer, intent(inout) :: C(elementi),marc_in,marc_agg
 
- do i=1,elementi
+ do jj=1,elem_y
+ do ii=1,elem_x 
+   i=elem_x*(jj-1)+ii
    if(C(i).lt.nmin(i))then
      in_elem=C(i)
      missed=nmin(i)-C(i)
-     y_sed=altezza
+     y_sed=MIN(y(connessioni(i,4))-y(connessioni(i,1)),y(connessioni(i,3))-y(connessioni(i,2)))
      do k=1,in_elem
        if(type_marc(marc_in_elem(i,k)).ne.t_sed)then
          dy=((y(connessioni(i,3))-y(connessioni(i,4)))*((x_marc(marc_in_elem(i,k))-x(connessioni(i,4)))/(x(connessioni(i,3))-&
@@ -3485,7 +3493,7 @@ end subroutine Elemental_pressure
          ymin=ymin_elem(i)
          ymax=ymax_elem(i)
        endif
-       if(free_surface.and.erosione.and.i.gt.elem_x*(elem_y-1).and.sed_layer(i-elem_x*(elem_y-1)).gt.0.D0.and.j.le.&
+       if(free_surface.and.erosione.and.sed_layer(ii).and.jj.eq.elem_y.and.ii.ne.1.and.ii.ne.elem_x.and.j.le.&
           CEILING(DBLE(missed)*y_sed/(ymax-ymin)))then
          ymarc=yy*y_sed+(ymax-y_sed)
          sed_mark=.true.
@@ -3493,6 +3501,15 @@ end subroutine Elemental_pressure
          ymarc=yy*(ymax-ymin)+ymin
        endif
        distmin=larghezza
+!       if(ii.eq.1)then
+!         kk=i+1
+!         in_elem=C(i+1)
+!       elseif(ii.eq.elem_x)then
+!         kk=i-1
+!         in_elem=C(i-1)
+!       else
+!         kk=i
+!       endif
        do k=1,in_elem
          dist=DSQRT(((xmarc-x_marc(marc_in_elem(i,k)))**2)+((ymarc-y_marc(marc_in_elem(i,k)))**2))
          if(dist.lt.distmin)then
@@ -3525,8 +3542,8 @@ end subroutine Elemental_pressure
          if(inside(marc_in_elem(i,k)))then
            dist=0.D0
            do kk=1,in_elem
-             if(k.ne.kk.and.inside(marc_in_elem(i,kk)))dist=dist+DSQRT&
-               (((x_marc(marc_in_elem(i,k))-x_marc(marc_in_elem(i,kk)))**2)+((y_marc(marc_in_elem(i,k))-y_marc(marc_in_elem(i,kk)))**2))
+             if(k.ne.kk.and.inside(marc_in_elem(i,kk)))dist=dist+DSQRT(((x_marc(marc_in_elem(i,k))-x_marc(marc_in_elem(i,kk)))**2)+&
+               ((y_marc(marc_in_elem(i,k))-y_marc(marc_in_elem(i,kk)))**2))
            enddo
            if(dist.lt.distmin)then
              distmin=dist
@@ -3539,6 +3556,7 @@ end subroutine Elemental_pressure
        marc_in=marc_in-1
      enddo
    endif
+ enddo
  enddo
 
  end subroutine Add_remove_markers
