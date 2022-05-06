@@ -10,7 +10,7 @@
  file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
  layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,dim_x_lg,dim_y_lg,&
  old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,&
- rho_press,thermal_act,OUT_MODEL,OUT_PHASE)
+ rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean)
 
  Implicit none
 
@@ -20,7 +20,7 @@
  parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press
 
  character(len=*), intent(out) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,&
- file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE
+ file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE,DIR_Perplex
 
  integer, intent(out) :: ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,OUT_FILE_nb,init_num_mat,marc_elem,&
  left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T
@@ -29,7 +29,7 @@
  transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
  e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
  g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,&
- dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
+ dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean
 
  integer, dimension(:), allocatable :: n_elem_x,n_elem_y
  double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
@@ -44,33 +44,33 @@
  solver_T=.true.                                             !Risoluzione dell'equazione dell'energia
  shear=.true.                                         !Utilizzo shear heating nell'equazione dell'energia
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
- healing=.false.                                            !Calcolo strain healing
+ healing=.true.                                            !Calcolo strain healing
  rho_press=.false.                                            !Densità dipendente dalla pressione
  perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
  idratazione=.true.                                             !Utilizzo idratazione
  serpentine=.true.                                             !Serpentinizzazione del mantello
  ocean=.false.                                             !Oceanizzazione del melting
  melting=.true.                                            !Utlizzo meccanismo di melting
- erosione=.false.                                            !Utilizzo meccanismo erosione/sedimentazione
+ erosione=.true.                                            !Utilizzo meccanismo erosione/sedimentazione
  equilib=.false.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='InitialBC_Earth_seed.wb'                                   !Nome file World Builder
+ file_world='Initial_Sesia_big_serpentine.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
- t_final=10.D06                                               !Tempo finale
- Cn=0.1D0                                                  !Courant number - compreso tra 0 e 1
+ t_final=20.D06                                               !Tempo finale
+ Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=1.D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Extension_models/Venus/'              !Main Directory in cui scrivere i file di output
- OUT_MODEL='prova/'                                                   !Nome della directory per il modello in corso
- OUT_PHASE='Extension_0-10Ma/'                                         !Nome della directory per la fase evolutiva in corso
+ OUT_DIR='../Output_models/Sesia'              !Main Directory in cui scrivere i file di output
+ OUT_MODEL='Microcontinent_big'                                                   !Nome della directory per il modello in corso
+ OUT_PHASE='Compression_0-20Myr'                                         !Nome della directory per la fase evolutiva in corso
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -104,14 +104,14 @@
  Press_0=0.0D0                                                   !Pressione superficiale
 
 !cccccccccccccccccccccccccccc Boundary condition velocità cccccccccccccccccccccccccccc
- v_sx=-0.5D0                                                  !Velocità lato sinistro in cm/yr
- v_dx=0.5D0                                                  !Velocità lato destro in cm/yr
+ v_sx=1.D0                                                  !Velocità lato sinistro in cm/yr
+ v_dx=0.D0                                                  !Velocità lato destro in cm/yr
  left_v=3                                                 !BC lato sx - 1-open; 2-free-slip; 3-fixed
  right_v=3                                                 !BC lato dx - 1-open; 2-free-slip; 3-fixed
  top_v=1                                                 !BC top - 1-open; 2-free-slip; 3-fixed
  bottom_v=2                                                 !BC bottom - 1-open; 2-free-slip; 3-fixed
- lito_sx=120.D03                                          !Spessore litosfera lato sx
- lito_dx=120.D03                                         !Spessore litosfera lato dx
+ lito_sx=80.D03                                          !Spessore litosfera lato sx
+ lito_dx=100.D03                                         !Spessore litosfera lato dx
  transition_BC_sx=100.D03                                        !Spessore transizione buondary condition lato sx
  transition_BC_dx=100.D03                                         !Spessore transizione buondary condition lato dx
 
@@ -122,7 +122,7 @@
  bottom_T=.true.                                                 !BC bottom
 
 !ccccccccccccccccccccccccccc Profilo iniziale temperatura cccccccccccccccccccccccccccc
- parabolic_T=.true.                                        !Incremento profilo termico iniziale non lineare
+ parabolic_T=.false.                                        !Incremento profilo termico iniziale non lineare
  LAYER_T=1                                                 !Numero livelli termici con profili non lineari
  allocate(T_top(layer_t),T_bot(layer_t),y_top(layer_t),y_bot(layer_t),radio(layer_t),cond(layer_t)) !!!!!!!!!NON MODIFICARE!!!!!!!!!
  T_top(1)=273.15                                             !Temperatura alla base del livello termico con profilo non lineare in K
@@ -133,8 +133,8 @@
  cond(1)=2.5D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
- file_grid='Griglia_Venus'               !Nome del file griglia
-! file_grid='../Output_models/Alboran/Compression_0-2Ma_v=10/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia_Sesia_big_serpentine'               !Nome del file griglia
+ file_grid='../Output_models/Sesia/Microcontinent_big/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -161,17 +161,17 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
- file_marc='Marcatori_Venus_seed'                                        !Nome del file marcatori
-! file_marc='../Output_models/Alboran/Compression_0-2Ma_v=10/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_Sesia_big_serpentine'                                        !Nome del file marcatori
+ file_marc='../Output_models/Sesia/Microcontinent_big/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
- init_num_mat=5                                            !Numero iniziale dei materiali
+ init_num_mat=9                                            !Numero iniziale dei materiali
  marc_elem=16                                              !Numero di marcatori per elemento di minore dimensione
  MARKERS_CONSTANT=.true.                                          !Numero marcatori costante per ogni elemento
  MARKERS_DISTRIBUTION=1                                  !Distribuzione marcatori - 1-regolare; 2-random; 3-random seguendo una griglia regolare
 
 !cccccccccccccccccccccccccccccccc Parametri weak seed cccccccccccccccccccccccccccccccc
- WEAK_SEED=.true.                                                   !Esistenza di un weak seed
+ WEAK_SEED=.false.                                                   !Esistenza di un weak seed
  WEAK_PLASTIC=.true.                                                  !.true. weak plastico - .false. weak viscoso
  WEAK_TYPE=1                                               !Valore strain iniziale - 1-Fixed; 2-Random; 3-Sinusoidale
  WEAK_NUMBER=1                                                    !Numero di weak seed
@@ -199,17 +199,19 @@
  thermal_act=100.D0                                               !Thermal activation constant
 
 !ccccccccccccccccccccccccccccccccc Parametri Perple_X cccccccccccccccccccccccccccccccc
- file_perplexM='./Phase_changes/Mantle'                          !Nome file Perple_x per il mantello anidro
- file_perplexUC='./Phase_changes/Upper continental'                          !Nome file Perple_x per il la crosta continentale superiore
- file_perplexLC='./Phase_changes/Lower continental'                          !Nome file Perple_x per la crosta continental inferiore
- file_perplexO='./Phase_changes/Ocean'                          !Nome file Perple_x per la crosta oceanica
- file_perplexS='./Phase_changes/Sediment'                          !Nome file Perple_x per i sedimenti
- file_perplexSp='./Phase_changes/Serpentine'                          !Nome file Perple_x per il mantello idrato
+ DIR_Perplex='Phase_changes'
+ file_perplexM='Mantle'                          !Nome file Perple_x per il mantello anidro
+ file_perplexUC='Upper continental'                          !Nome file Perple_x per il la crosta continentale superiore
+ file_perplexLC='Lower continental'                          !Nome file Perple_x per la crosta continental inferiore
+ file_perplexO='Ocean'                          !Nome file Perple_x per la crosta oceanica
+ file_perplexS='Sediment'                          !Nome file Perple_x per i sedimenti
+ file_perplexSp='Serpentine'                          !Nome file Perple_x per il mantello idrato
 
 !ccccccccccccccccccccccccccccc Parametri per idratazione ccccccccccccccccccccccccccccc
  H2O_0=0.D0                                                  !Quantità iniziale di acqua nel mantello in wt%
  H2O_max=0.D0                                                  !Quantità massima di acqua nel mantello in wt%
  H2O_serp=0.D0                                                  !Quantità massima di acqua nel serpentino in wt%
+ H2O_ocean=0.D0                                                   !quantità massima di acqua nell'oceano in wt%
 
 !ccccccccccccccccccccccccccccccc Parametri per melting ccccccccccccccccccccccccccccccc
  kappa_melt=60.D0                                 !Costante per il calcolo di deltaT
@@ -249,7 +251,7 @@
  ratio=0.5D0                                              !Sand-shale ratio for material leaving the continent
  L_coeff=1.D02                                              !Averaging depth/thickness needed to solve the sand-shale equation in meters
  kappa_s=3.D02                                             !Marine transport coefficient (diffusivity) for sand in m2/yr
- kappa_sh=kappa_s/2.D0                                             !Marine transport coefficient (diffusivity) for shale in m2/yr
+ kappa_sh=kappa_s                                             !Marine transport coefficient (diffusivity) for shale in m2/yr
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !c     PARAMETRI NON MODIFICABILI DEL SISTEMA

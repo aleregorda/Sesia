@@ -19,20 +19,20 @@ program FALCON
    file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
    layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,&
    serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act,&
-   OUT_MODEL,OUT_PHASE)
+   OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean)
    logical, intent(out) :: perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,&
    OUT_FILE_nl,OUT_FILE_nl_vtu,OUT_FILE_nl_it,vel_corr,runge_4,OUT_FILE_final_distribution,NEW_FILE_GRID,NEW_FILE_MARKERS,&
    MARKERS_CONSTANT,left_T,right_T,top_T,bottom_T,WEAK_SEED,courant_number,check_markers,eff_average,shear,adiabatic,solver_T,parabolic_T,&
    markers_vtu_out,markers_txt_out,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press
    character(len=*), intent(out) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,&
-   file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE
+   file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE,DIR_Perplex
    integer, intent(out) :: ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,OUT_FILE_nb,init_num_mat,marc_elem,&
    left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T
    double precision, intent(out) :: t_final,v_sx,v_dx,Rhoref,Diff,Viscref,alpharef,Cpref,lito_sx,lito_dx,H2O_serp,&
    transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
    e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
    g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,dim_x_lg,&
-   dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
+   dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean
    integer, dimension(:), allocatable :: n_elem_x,n_elem_y
    double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
    y_bot,radio,cond
@@ -62,13 +62,13 @@ program FALCON
  serpentine,ocean,weak_plastic,healing,rho_press
 
  character(len=150) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,&
- lgrid,OUT_MODEL,OUT_PHASE
+ lgrid,OUT_MODEL,OUT_PHASE,DIR_Perplex
 
  integer :: i,j,k,indice,nodi,elementi,marcatori,ig,it,nt,ip,marcatoritot,ic,ikl,ilg,ill,indof1,indof2,ine1,ine2,t_lcont,nodi_x,nodi_y,&
  elem_x,elem_y,nproc,iproc,counter,chain,colonna,celle,celleP,t_cont,t_oc,t_mantle,t_serp,t_air,t_sed,t_wet,ierr,t_contM,t_ocM,t_mantleM,t_lcontM,&
  ic_max,ic_min,elem_x1,elem_x2,elem_x3,em,ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,num_mat,OUT_FILE_nb,riga,nl_out,&
  init_num_mat,marc_elem,left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,weak_type,marc_in,marc_agg,layer_T,elem_x_lg,elem_y_lg,&
- nodi_lg,elem_lg,t_lmantle
+ nodi_lg,elem_lg,t_lmantle,numarg
 
  double precision :: altezza,larghezza,Tgauss,Veltot,x_max,x_min,y_max,y_min,dTX,dPX,minTX,minPX,dPXs,var_grid,dvolu,norm_dP,norm_P,&
  dt,dt0,tempo,D_mu(3,3),D_l(3,3),Ra,Rc,tau1,tau2,tau3,tau,h0,t0,v0,DTemp,lito_sx,lito_dx,transition_BC_sx,transition_BC_dx,Kcref,Href,&
@@ -76,7 +76,7 @@ program FALCON
  Ts,Tb,Tref,Rhoref,Cpref,Diff,Viscref,alpharef,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,&
  tol_melt,Hl,e0,e1,e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_d,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,g_coeff,gsed_coeff,&
  p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,kappa_fsed,kappa_dsed,Diss,e2rdm,thick_air,time_step,t_initial,&
- dim_x_lg,dim_y_lg,Press_0,H2O_serp,weak,e0w,e1w,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act
+ dim_x_lg,dim_y_lg,Press_0,H2O_serp,weak,e0w,e1w,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean
 
  logical, dimension(:), allocatable :: BC_fix,BC_fixT,diffusion,inside,peierls,uniaxial,sed_layer
  character(len=50), dimension(:), allocatable ::materiale
@@ -138,8 +138,8 @@ program FALCON
       WEAK_DIM_X,WEAK_DIM_Y,THICK_AIR,file_world,WEAK_NUMBER,file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,&
       courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,&
       markers_vtu_out,markers_txt_out,lagrangian_grid,dim_x_lg,dim_y_lg,old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,&
-      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act,OUT_MODEL,OUT_PHASE)
- call parametri_options(iproc,OUT_DIR,t_initial,t_final,Cn,time_step,max_time_step)
+      ymin_lg,ymax_lg,max_time_step,healing,healing_rate,rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean)
+ call changed_parameters(iproc,numarg,OUT_DIR,OUT_MODEL,OUT_PHASE,t_initial,t_final,Cn,time_step,max_time_step,power_law)
  if(equilib)then
    v_sx=0.D0
    v_dx=0.D0
@@ -159,9 +159,15 @@ program FALCON
         coeffAdf,teta_fr_0,Cohe_0,t_mantle,t_cont,t_lcont,t_oc,t_air,t_sed,t_serp,t_mantleM,t_contM,t_lcontM,t_ocM,teta_fr_inf,Cohe_inf,Ws,&
         diffusion,rheology,f_scale,t_wet,Visc_min,Visc_max,peierls,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,uniaxial)
 
-   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE))
-   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'vtu_files')
-   call system ('mkdir -p '//TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'txt_files')
+   call system('mkdir -p '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE))
+   call system('mkdir -p '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/vtu_files')
+   call system('mkdir -p '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/txt_files')
+   if(numarg.gt.0)then
+     call system('mv -f "changed_parameters.txt" '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/changed_parameters.txt')
+   else
+     call system('cp -f "parametri.f90" '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/parametri_ref.f90')
+     call system('cp -f "proprieta.f90" '//TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/proprieta_ref.f90')
+   endif
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !c     1 - LETTURA FILE GRIGLIA E TEMPERATURA INIZIALE
@@ -271,8 +277,10 @@ program FALCON
 
  call mumps_vectors(iproc,idV,nodi,elementi,nodi_elem,ndof,connessioni)
  idV%ICNTL(3)=10
- call mumps_vectors(iproc,idT,nodi,elementi,nodi_elem,ndofT,connessioni)
- idT%ICNTL(3)=11
+ if(solver_T)then
+   call mumps_vectors(iproc,idT,nodi,elementi,nodi_elem,ndofT,connessioni)
+   idT%ICNTL(3)=11
+ endif
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !c     3 - ADIMENSIONALIZZAZIONE E BOUNDARY CONDITIONS
@@ -390,7 +398,7 @@ program FALCON
      if(thick_air.eq.0.D0)y_chain=y_max
    endif
 
-   if(perple_x)call File_Perple_X(celle,celleP,dTX,dPX,dPXs,minTX,minPX,RhoXs,CpXs,alphaXs,WXs,RhoX,CpX,alphaX,WX,&
+   if(perple_x)call File_Perple_X(celle,celleP,dTX,dPX,dPXs,minTX,minPX,RhoXs,CpXs,alphaXs,WXs,RhoX,CpX,alphaX,WX,DIR_Perplex,&
                     file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp)
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -773,9 +781,9 @@ program FALCON
    endif
    if(OUT_FILE_nl_it)then
      if(it.eq.1)then
-       open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Iterations_flux.txt',status='replace')
+       open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Iterations_flux.txt',status='replace')
      else
-       open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Iterations_flux.txt',status='old',position='append')
+       open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Iterations_flux.txt',status='old',position='append')
      endif
      write(1,*)it,tempo,ic-1,SUM(flux_sx),SUM(flux_dx)
      close(1)
@@ -793,6 +801,7 @@ program FALCON
 !c     9 - BILANCIO DELL'ENERGIA
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
  if(solver_T)then
+   if(iproc.eq.0)open(unit=11,file='mumps_info_T',status='unknown')
    if(iproc.eq.0.and.tempo.le.t_final)then
      call cpu_time(t1)
      print *,'- Energy solution:'
@@ -800,7 +809,6 @@ program FALCON
      if(power_law.and..not.equilib)print *,'  Do not worry, it is much faster than momentum solution!'
      allocate(K_loc(nodi_elem*ndofT,nodi_elem*ndofT),K_Mc(nodi_elem*ndofT,nodi_elem*ndofT),K_K(nodi_elem*ndofT,nodi_elem*ndofT))
      allocate(Load(nodi_elem*ndofT),N1(1,nodi_elem),N2(nodi_elem,1),NTT(nodi_elem,1),Vel1(1,ndof),Vel2(ndof,1),Tnodi(nodi_elem))
-     open(unit=11,file='mumps_info_T',status='unknown')
      idT%RHS=0.D0
      idT%A_ELT=0.D0
      counter=0
@@ -858,8 +866,8 @@ program FALCON
      print 1013,t2-t1
      print 1015,(t2-t1)*nproc
      print *,''
-     close(11)
    endif
+   if(iproc.eq.0)close(11)
  endif
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -1347,6 +1355,7 @@ contains
  write(1,*)'Marcatori totali'
  write(1,*)SUM(marc_in_elem)
  write(1,1000)
+ k=0
  do i=1,elementi
    if(MARKERS_DISTRIBUTION.eq.1)then
      nx=INT(SQRT(DBLE(marc_in_elem(i))))
@@ -1516,14 +1525,14 @@ contains
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
- subroutine File_Perple_X(celle,celleP,dTX,dPX,dPXs,minTX,minPX,RhoXs,CpXs,alphaXs,WXs,RhoX,CpX,alphaX,WX,&
+ subroutine File_Perple_X(celle,celleP,dTX,dPX,dPXs,minTX,minPX,RhoXs,CpXs,alphaXs,WXs,RhoX,CpX,alphaX,WX,DIR_Perplex,&
  file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp)
 
  Implicit none
 
  integer :: i,j
  double precision, dimension(:,:), allocatable :: TX,PX,TXs,PXs
- character(len=*), intent(in) :: file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp
+ character(len=*), intent(in) :: file_perplexM,file_perplexUC,file_perplexLC,file_perplexO,file_perplexS,file_perplexSp,DIR_Perplex
  integer, intent(out) :: celle,celleP
  double precision, intent(out) :: dTX,dPX,dPXs,minTX,minPX
  double precision, dimension(:,:), allocatable, intent(out) :: RhoXs,CpXs,alphaXs,WXs
@@ -1531,12 +1540,12 @@ contains
 
  print *,''
  print *,'Reading Perple_X files...'
- open(unit=1,file=file_perplexM,status='old')
+ open(unit=1,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexM),status='old')
  read(1,*)celle
- open(unit=2,file=file_perplexUC,status='old')
- open(unit=3,file=file_perplexLC,status='old')
- open(unit=4,file=file_perplexO,status='old')
- open(unit=5,file=file_perplexS,status='old')
+ open(unit=2,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexUC),status='old')
+ open(unit=3,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexLC),status='old')
+ open(unit=4,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexO),status='old')
+ open(unit=5,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexS),status='old')
  celleP=((celle-1)*2)+celle
  allocate(TX(celle,celleP),PX(celle,celleP),RhoX(celle,celleP,5),CpX(celle,celleP,5),alphaX(celle,celleP,5),WX(celle,celleP,5))
  do i=1,celleP
@@ -1553,7 +1562,7 @@ contains
  close(3)
  close(4)
  close(5)
- open(unit=1,file=file_perplexSp,status='old')
+ open(unit=1,file=TRIM(DIR_Perplex)//'/'//TRIM(file_perplexSp),status='old')
  allocate(TXs(celle,celle),PXs(celle,celle),RhoXs(celle,celle),CpXs(celle,celle),alphaXs(celle,celle),WXs(celle,celle))
  do i=1,celle
   do j=1,celle
@@ -2436,8 +2445,8 @@ end subroutine Elemental_pressure
    dvel=dvel0
  endif
 
- write(filename,'("vtu_files/Convergence.",I2.2,".",I3.3,".vtu")')it,ic
- open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
+ write(filename,'("/vtu_files/Convergence.",I2.2,".",I3.3,".vtu")')it,ic
+ open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,*) '<VTKFile type="UnstructuredGrid" version="0.1" byte_order="BigEndian">'
@@ -2547,11 +2556,11 @@ end subroutine Elemental_pressure
  endif
 
  if(it.eq.1.and.ic.eq.1)then
-   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Residuals.txt',status='replace')
-   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'MinMax.txt',status='replace')
+   open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Residuals.txt',status='replace')
+   open(unit=2,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/MinMax.txt',status='replace')
  else
-   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Residuals.txt',status='old',position='append')
-   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'MinMax.txt',status='old',position='append')
+   open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Residuals.txt',status='old',position='append')
+   open(unit=2,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/MinMax.txt',status='old',position='append')
  endif
  write(1,*)DBLE(it)+DBLE(ic)/(1.5D0*it_max),res,vel,press
  write(2,*)DBLE(it)+DBLE(ic)/(1.5D0*it_max),Pn_min,Pn_max,Pe_min,Pe_max,visc_min,visc_max,Vx_min,Vx_max,Vy_min,Vy_max
@@ -2619,8 +2628,8 @@ end subroutine Elemental_pressure
  if(OUT_TYPE)name=FLOOR(tempo*1000.D0)
  if(.not.OUT_TYPE)name=it-1
 
- write(filename,'("vtu_files/Solution.",I5.5,".vtu")')name
- open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
+ write(filename,'("/vtu_files/Solution.",I5.5,".vtu")')name
+ open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,104) tempo
@@ -2649,8 +2658,8 @@ end subroutine Elemental_pressure
  do i=1,nodi
    write(1,*) Ptot_nodi(i)
  enddo
- write(filename,'("txt_files/Nodi.",i5.5,".txt")')name
- open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
+ write(filename,'("/txt_files/Nodi.",i5.5,".txt")')name
+ open(unit=2,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown')
  write(2,108) tempo
  write(2,2002)
  write(1,*) '</DataArray>'
@@ -2665,8 +2674,8 @@ end subroutine Elemental_pressure
  write(1,*) '</Points>'
  close(2)
 
- write(filename,'("txt_files/Elementi.",i5.5,".txt")')name
- open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
+ write(filename,'("/txt_files/Elementi.",i5.5,".txt")')name
+ open(unit=2,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown')
  write(2,108) tempo
  write(2,2001)
  write(1,*) '<CellData Scalars="scalars">'
@@ -2811,8 +2820,8 @@ end subroutine Elemental_pressure
  close(1)
 
  if(markers_vtu_out)then
-   write(filename,'("vtu_files/Markers.",I5.5,".vtk")')name
-   open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
+   write(filename,'("/vtu_files/Markers.",I5.5,".vtk")')name
+   open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown')
    write(1,107) tempo
    write(1,101)
    write(1,109)
@@ -2820,8 +2829,8 @@ end subroutine Elemental_pressure
    write(1,111) marcatori
  endif
  if(markers_txt_out)then
-   write(filename,'("txt_files/Marcatori.",i5.5,".txt")')name
-   open(unit=2,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown')
+   write(filename,'("/txt_files/Marcatori.",i5.5,".txt")')name
+   open(unit=2,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown')
    write(2,108) tempo
    write(2,2003)
  endif
@@ -2980,8 +2989,8 @@ end subroutine Elemental_pressure
  enddo
  elem_g=COUNT(inside)
 
- write(filename,'("vtu_files/Grid.",I5.5,".vtu")')name
- open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
+ write(filename,'("/vtu_files/Grid.",I5.5,".vtu")')name
+ open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//filename,status='unknown',form='formatted')
  rewind(1)
 
  write(1,104) tempo
@@ -3706,7 +3715,7 @@ end subroutine Elemental_pressure
 
  character(len=*), intent(in) :: OUT_DIR,OUT_MODEL,OUT_PHASE
 
- open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Griglia_final',status='unknown') 
+ open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Griglia_final',status='unknown') 
  write(1,1000)
  write(1,'(i10,1x,20(f15.5,i10))')layer_x,(thick_x(i),n_elem_x(i),i=1,layer_x)
  write(1,'(i10,1x,20(f15.5,i10))')layer_y,(thick_y(i),n_elem_y(i),i=1,layer_y)
@@ -3721,7 +3730,7 @@ end subroutine Elemental_pressure
  enddo
  close(1)
 
- open(unit=1,file=TRIM(OUT_DIR)//TRIM(OUT_MODEL)//TRIM(OUT_PHASE)//'Marcatori_final',status='unknown') 
+ open(unit=1,file=TRIM(OUT_DIR)//'/'//TRIM(OUT_MODEL)//'/'//TRIM(OUT_PHASE)//'/Marcatori_final',status='unknown') 
  rewind(1)
  write(1,*)'Marcatori totali'
  write(1,*)marcatori
