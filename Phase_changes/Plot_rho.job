@@ -1,0 +1,17 @@
+gmt gmtset PS_MEDIA a3
+gmt gmtset FONT_TITLE 18p FONT_ANNOT_PRIMARY 12p FONT_ANNOT_SECONDARY 8p FONT_LABEL 16p
+gmt gmtset MAP_ANNOT_OFFSET_PRIMARY 0.1c
+gmt gmtset MAP_LABEL_OFFSET 0.4c
+gmt gmtset MAP_TITLE_OFFSET 0.5c
+
+gmt makecpt -Crainbow -D -T3000/4200/50 > rho.cpt
+
+PS=rho_ocean
+
+gmt psbasemap -R300/1300/0/25 -JX10/10 -Bx200f100+l"Temperature" -By2f1+l"Pressure" -BWSne -X2 -Y28 -K -P > $PS.ps
+
+awk '{if(NR>1) print($1-273.15,$2/1.E04,$3)}' Ocean | gmt psxy -R -JX -O -Sc0.1 -Crho -K >> $PS.ps
+
+gmt psscale -Crho -O -D11/5/10/0.5 -Ba200f100:"Density": >> $PS.ps
+
+rm *.cpt gmt.*

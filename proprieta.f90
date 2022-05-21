@@ -12,7 +12,7 @@
  coeffA,Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,teta_fr_inf,Cohe_inf,Ws,f_scale,Visc_min,Visc_max,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,&
  grain_m,grain_p
 
- num_mat=12                                                    !Numero di materiali del sistema
+ num_mat=13                                                    !Numero di materiali del sistema
 
  allocate(materiale(num_mat),Tref_M(num_mat),Rho_M(num_mat),Visc_M(num_mat),alpha_M(num_mat),Cp_M(num_mat),Hr_M(num_mat),&
  Kc_M(num_mat),ndisl(num_mat),Ea(num_mat),Va(num_mat),coeffA(num_mat),Eadf(num_mat),Vadf(num_mat),&
@@ -123,10 +123,10 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=1.393D-37                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.8D0                                                  !Stress exponent dislocation creep
- Ea(i)=8.9D04                                                  !Energia di attivazione dislocation creep
- Va(i)=3.2D-06                                                  !Volume di attivazione dislocation creep
+ coeffA(i)=1.198819D-26                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=4.7D0                                                  !Stress exponent dislocation creep
+ Ea(i)=4.85D05                                                  !Energia di attivazione dislocation creep
+ Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
@@ -139,10 +139,10 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_0(i)=25.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=0.D0                                                  !Coesione iniziale
- teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=0.D0                                                       !Rapporto coesione per weakening
+ teta_fr_0(i)=15.D0                                                  !Angolo di frizione iniziale
+ Cohe_0(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_inf(i)=3.D0                                                       !Rapporto angolo di frizione per weakening
+ Cohe_inf(i)=2.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 4
@@ -188,7 +188,7 @@
  t_serp=i
  materiale(i)='serpentine'
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
- Rho_M(i)=3000.D0                                                  !Densità
+ Rho_M(i)=3300.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
  alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
  Cp_M(i)=1250.D0                                                  !Calore specifico
@@ -200,10 +200,10 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=1.393D-37                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.8D0                                                  !Stress exponent dislocation creep
- Ea(i)=8.9D04                                                  !Energia di attivazione dislocation creep
- Va(i)=3.2D-06                                                  !Volume di attivazione dislocation creep
+ coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
+ Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
+ Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
@@ -218,10 +218,10 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_0(i)=25.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=2.D07                                                  !Coesione iniziale
- teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
+ teta_fr_0(i)=5.D0                                                  !Angolo di frizione iniziale
+ Cohe_0(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_inf(i)=1.D0                                                       !Rapporto angolo di frizione per weakening
+ Cohe_inf(i)=2.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 6
@@ -388,8 +388,48 @@
 
 !Materiale 10
  i=10
+ materiale(i)='upper mantle'
+ Tref_M(i)=273.15D0                                              !Temperatura di riferimento
+ Rho_M(i)=3300.D0                                                  !Densità
+ Visc_M(i)=1.D22                                                  !Viscosità
+ alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
+ Cp_M(i)=1250.D0                                                  !Calore specifico
+ Hr_M(i)=0.D0                                                  !Calore radiogenico
+ Kc_M(i)=2.25D0                                                  !Conduttività termica
+ rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
+ f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
+ Visc_min(i)=1.D19                                                  !Viscosità minima
+ Visc_max(i)=1.D25                                                  !Viscosità massima
+ uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
+!Disclocation creep
+ coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
+ Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
+ Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
+!Diffusion creep
+ diffusion(i)=.false.                                                 !Utilizzo diffusion creep
+ coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
+ Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
+ Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
+ grain_m(i)=5.D-03                                                  !Grain size diffusion creep
+ grain_p(i)=3.D0                                                  !Esponente grain size diffusion creep
+!Peierls creep
+ peierls(i)=.true.                                                         !Utilizzo Peierls creep
+ coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
+ ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
+ Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
+ Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
+!Plasticity
+ teta_fr_0(i)=5.D0                                                  !Angolo di frizione iniziale
+ Cohe_0(i)=1.D07                                                  !Coesione iniziale
+ teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
+ Cohe_inf(i)=1.D07                                                       !Rapporto coesione per weakening
+ Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
+
+!Materiale 11
+ i=11
  t_sed=i
- materiale(i)='sediments'
+ materiale(i)='sediment'
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2650.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -427,8 +467,8 @@
  Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
-!Materiale 11
- i=11
+!Materiale 12
+ i=12
  t_wet=i
  materiale(i)='wet mantle'
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
@@ -468,8 +508,8 @@
  Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
-!Materiale 12
- i=12
+!Materiale 13
+ i=13
  t_mantleM=i
  materiale(i)='melt'
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento

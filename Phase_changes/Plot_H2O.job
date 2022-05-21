@@ -1,0 +1,17 @@
+gmt gmtset PS_MEDIA a3
+gmt gmtset FONT_TITLE 18p FONT_ANNOT_PRIMARY 12p FONT_ANNOT_SECONDARY 8p FONT_LABEL 16p
+gmt gmtset MAP_ANNOT_OFFSET_PRIMARY 0.1c
+gmt gmtset MAP_LABEL_OFFSET 0.4c
+gmt gmtset MAP_TITLE_OFFSET 0.5c
+
+gmt makecpt -Croma -D -T0/14/1 > H2O.cpt
+
+PS=H2O_Serpentine
+
+gmt psbasemap -R0/1000/0/7 -JX10/10 -Bx100f50+l"Temperature" -By1f0.5+l"Pressure" -BWSne -X2 -Y28 -K -P > $PS.ps
+
+awk '{print($1-273.15,$2/1.E04,$6)}' Serpentine | gmt psxy -R -JX -O -Sc0.1 -CH2O -K >> $PS.ps
+
+gmt psscale -CH2O -O -Dx11/5/10/0.5 -Ba1f0.5:"H2O wt%": >> $PS.ps
+
+rm *.cpt gmt.*

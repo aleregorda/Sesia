@@ -1,6 +1,6 @@
  subroutine parametri(t_final,v_sx,v_dx,Rhoref,Cpref,Diff,Viscref,alpharef,lito_sx,lito_dx,&
- transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,&
- e1,e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,OUT_DIR,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,&
+ transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_wet,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,&
+ e1,e0v,e1v,rw,OH_0,alpham_dl,alpham_df,esp_m,esp_n,OUT_DIR,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,&
  Gy,Rgas,PF,perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,OUT_FILE_nb,OUT_FILE_nl,&
  ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,file_marc,file_grid,media,vel_corr,OUT_FILE_nl_vtu,&
  OUT_FILE_nl_it,runge_4,OUT_FILE_final_distribution,g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,&
@@ -10,7 +10,7 @@
  file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
  layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,dim_x_lg,dim_y_lg,&
  old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,&
- rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean)
+ rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean,beta_press,delta_water,melt_ext)
 
  Implicit none
 
@@ -26,10 +26,11 @@
  left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T
 
  double precision, intent(out) :: t_final,v_sx,v_dx,Rhoref,Diff,Viscref,alpharef,Cpref,lito_sx,lito_dx,H2O_serp,&
- transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
- e0v,e1v,fv,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
+ transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_wet,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
+ e0v,e1v,rw,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
  g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,&
- dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean
+ dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean,beta_press,delta_water,&
+ melt_ext
 
  integer, dimension(:), allocatable :: n_elem_x,n_elem_y
  double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
@@ -45,19 +46,19 @@
  shear=.true.                                         !Utilizzo shear heating nell'equazione dell'energia
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
  healing=.true.                                            !Calcolo strain healing
- rho_press=.false.                                            !Densità dipendente dalla pressione
- perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
+ rho_press=.true.                                            !Densità dipendente dalla pressione
+ perple_x=.true.                                               !Utilizzo Perple_X per transizioni di fase
  idratazione=.true.                                             !Utilizzo idratazione
  serpentine=.true.                                             !Serpentinizzazione del mantello
- ocean=.false.                                             !Oceanizzazione del melting
+ ocean=.true.                                             !Oceanizzazione del melting
  melting=.true.                                            !Utlizzo meccanismo di melting
  erosione=.true.                                            !Utilizzo meccanismo erosione/sedimentazione
- equilib=.false.                                       !Fase di riequilibrazione isostatica
+ equilib=.true.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='Initial_Sesia_big_serpentine.wb'                                   !Nome file World Builder
+ file_world='Initial_weak_seed.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
@@ -69,13 +70,14 @@
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
  OUT_DIR='../Output_models/Sesia'              !Main Directory in cui scrivere i file di output
- OUT_MODEL='Microcontinent_big'                                                   !Nome della directory per il modello in corso
- OUT_PHASE='Compression_0-20Myr'                                         !Nome della directory per la fase evolutiva in corso
+ OUT_MODEL='No_microcontinent_idra_weak_seed_perplex'                                                   !Nome della directory per il modello in corso
+! OUT_PHASE='Compression_0-20Myr'                                         !Nome della directory per la fase evolutiva in corso
+ OUT_PHASE='Isostatic'                                         !Nome della directory per la fase evolutiva in corso
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
  OUT_FILE_nb=1                                                       !Numero di iterazioni per il file di output - se OUT_TYPE=.false.
- OUT_FILE_tm=5.D05                                                       !Tempo di uscita per il file di output - se OUT_TYPE=.true.
+ OUT_FILE_tm=1.D06                                                       !Tempo di uscita per il file di output - se OUT_TYPE=.true.
  OUT_FILE_nl=.false.                                                     !Output file per ogni iterazione non-lineare
  OUT_FILE_nl_vtu=.false.                                                     !Output file vtu per ogni iterazione non-lineare
  OUT_FILE_nl_it=.false.                                                     !Output file con numero iterazioni non-lineari
@@ -133,8 +135,8 @@
  cond(1)=2.5D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
-! file_grid='Griglia_Sesia_big_serpentine'               !Nome del file griglia
- file_grid='../Output_models/Sesia/Microcontinent_big/Isostatic/Griglia_final'               !Nome del file griglia
+ file_grid='Griglia_weak_seed'               !Nome del file griglia
+! file_grid='../Output_models/Sesia/No_microcontinent_idra_weak_seed/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -161,11 +163,11 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
-! file_marc='Marcatori_Sesia_big_serpentine'                                        !Nome del file marcatori
- file_marc='../Output_models/Sesia/Microcontinent_big/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+ file_marc='Marcatori_weak_seed'                                        !Nome del file marcatori
+! file_marc='../Output_models/Sesia/No_microcontinent_idra_weak_seed/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
- init_num_mat=9                                            !Numero iniziale dei materiali
+ init_num_mat=10                                            !Numero iniziale dei materiali
  marc_elem=16                                              !Numero di marcatori per elemento di minore dimensione
  MARKERS_CONSTANT=.true.                                          !Numero marcatori costante per ogni elemento
  MARKERS_DISTRIBUTION=1                                  !Distribuzione marcatori - 1-regolare; 2-random; 3-random seguendo una griglia regolare
@@ -185,33 +187,35 @@
  eff_average=.false.                                    !Calcolo viscosità effettiva markers - .true. media armonica - .false. taglio visc. min e max
  it_max=100                                                       !Iterazioni massime power-law
  tol=1.D-03                                                  !Tolleranza convergenza power-law
- e0=0.5D0                                                  !Strain iniziale per weakening plastico
- e1=1.5D0                                                  !Strain finale per weakening plastico
- e0v=0.5D0                                                  !Strain iniziale per weakening viscoso
- e1v=1.5D0                                                  !Strain finale per weakening viscoso
- fv=1.D02                                               !Fattore di diminuzione della viscosità in presenza di acqua
- OH_0=0.062D0                                               !Limite quantità di acqua per comportamento anidro
- alpham_dl=-45.D0                                            !Esponente dislocation per la componente di melt
- alpham_df=-30.D0                                            !Esponente diffusion per la componente di melt
+ e0=0.D0                                                  !Strain iniziale per weakening plastico
+ e1=1.D0                                                  !Strain finale per weakening plastico
+ e0v=0.D0                                                  !Strain iniziale per weakening viscoso
+ e1v=1.D0                                                  !Strain finale per weakening viscoso
 
 !ccccccccccccccccccccccccccccccccc Parametri healing ccccccccccccccccccccccccccccccccc
  healing_rate=1.D-14                                              !Velocità di strain healing
  thermal_act=100.D0                                               !Thermal activation constant
 
+!ccccccccccccccccccccccccccccccccc Parametri densità ccccccccccccccccccccccccccccccccc
+ beta_press=5.124D-12                                         !Coefficiente di comprimibilità
+ delta_water=1.5D-02                                         !Coefficiente dipendenza della densità da H2O
+
 !ccccccccccccccccccccccccccccccccc Parametri Perple_X cccccccccccccccccccccccccccccccc
  DIR_Perplex='Phase_changes'
  file_perplexM='Mantle'                          !Nome file Perple_x per il mantello anidro
- file_perplexUC='Upper continental'                          !Nome file Perple_x per il la crosta continentale superiore
- file_perplexLC='Lower continental'                          !Nome file Perple_x per la crosta continental inferiore
+ file_perplexUC='Upper_continental'                          !Nome file Perple_x per il la crosta continentale superiore
+ file_perplexLC='Lower_continental'                          !Nome file Perple_x per la crosta continental inferiore
  file_perplexO='Ocean'                          !Nome file Perple_x per la crosta oceanica
  file_perplexS='Sediment'                          !Nome file Perple_x per i sedimenti
  file_perplexSp='Serpentine'                          !Nome file Perple_x per il mantello idrato
 
 !ccccccccccccccccccccccccccccc Parametri per idratazione ccccccccccccccccccccccccccccc
  H2O_0=0.D0                                                  !Quantità iniziale di acqua nel mantello in wt%
- H2O_max=0.D0                                                  !Quantità massima di acqua nel mantello in wt%
- H2O_serp=0.D0                                                  !Quantità massima di acqua nel serpentino in wt%
- H2O_ocean=0.D0                                                   !quantità massima di acqua nell'oceano in wt%
+ H2O_wet=2.D0                                                  !Quantità massima di acqua nel mantello in wt%
+ H2O_serp=6.8D0                                                  !Quantità massima di acqua nel serpentino in wt%
+ H2O_ocean=5.5D0                                                   !quantità massima di acqua nell'oceano in wt%
+ rw=1.D0                                               !Esponente per la diminuzione della viscosità in presenza di acqua
+ OH_0=0.062D0                                               !Limite quantità di acqua per comportamento anidro
 
 !ccccccccccccccccccccccccccccccc Parametri per melting ccccccccccccccccccccccccccccccc
  kappa_melt=60.D0                                 !Costante per il calcolo di deltaT
@@ -226,6 +230,9 @@
  y_t=536.86D0                                 !Coefficiente per calcolo della differenza solidus-liquidus - Kelley et al., 2010
  tol_melt=1.D-02                                   !Tolleranza per la convergenza del root finder - Falsi point method
  Hl=3.D05                                   !Calore latente
+ alpham_dl=-45.D0                                            !Esponente dislocation per la componente di melt
+ alpham_df=-30.D0                                            !Esponente diffusion per la componente di melt
+ melt_ext=3.D0                                        !Melt extraction in wt%
 
 !cccccccccccccccccccccccccccccc Parametri per erosione ccccccccccccccccccccccccccccccc
 !See https://fastscape.org/fastscapelib-fortran/#_fastscape_set_marine_parameters for a complete explanation of all parameters

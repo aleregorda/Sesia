@@ -1,0 +1,4 @@
+awk '{printf "%10.3f%10.2f%10.2f%10.6f%10.3f\n",$1,$2,$3,$4,$5}' upper_mantle > upper_mantle_ok
+awk '{printf "%10.3f%10.2f%10.2f%10.6f%10.3f\n",$1,$2,$3,$4,$5}' continental_crust > continental_crust_ok
+awk '{printf "%10.3f%10.2f%10.2f%10.6f%10.3f\n",$1,$2,$3,$4,$5}' lower_continental_crust > lower_continental_crust_ok
+awk '{printf "%10.3f%10.2f%10.2f%10.6f%10.3f\n",$1,$2,$3,$4,$5}' oceanic_crust > oceanic_crust_ok

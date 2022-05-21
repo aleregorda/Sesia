@@ -1,0 +1,29 @@
+awk '{if(NR==7)print($0)}' ../Perple_X/mantle1_1.tab > celle.tmp
+awk '{if(NR>13 && $2<100000.)print($0)}' ../Perple_X/mantle1_1.tab > 1.tmp
+awk '{if(NR>13 && $2<200000.)print($0)}' ../Perple_X/mantle2_1.tab > 2.tmp
+awk '{if(NR>13)print($0)}' ../Perple_X/mantle3_1.tab > 3.tmp
+cat celle.tmp 1.tmp 2.tmp 3.tmp > ../Perple_X/Mantle
+
+awk '{if(NR>13 && $2<100000.)print($0)}' ../Perple_X/ocean1_2.tab > 1.tmp
+awk '{if(NR>13 && $2<200000.)print($0)}' ../Perple_X/ocean2_2.tab > 2.tmp
+awk '{if(NR>13)print($0)}' ../Perple_X/ocean3_2.tab > 3.tmp
+cat 1.tmp 2.tmp 3.tmp > ../Perple_X/Ocean
+
+awk '{if(NR>13 && $2<100000.)print($0)}' ../Perple_X/upper_cont1_2.tab > 1.tmp
+awk '{if(NR>13 && $2<200000.)print($0)}' ../Perple_X/upper_cont2_2.tab > 2.tmp
+awk '{if(NR>13)print($0)}' ../Perple_X/upper_cont3_2.tab > 3.tmp
+cat 1.tmp 2.tmp 3.tmp > ../Perple_X/Upper_continental
+
+awk '{if(NR>13 && $2<100000.)print($0)}' ../Perple_X/lower_cont1_2.tab > 1.tmp
+awk '{if(NR>13 && $2<200000.)print($0)}' ../Perple_X/lower_cont2_2.tab > 2.tmp
+awk '{if(NR>13)print($0)}' ../Perple_X/lower_cont3_2.tab > 3.tmp
+cat 1.tmp 2.tmp 3.tmp > ../Perple_X/Lower_continental
+
+awk '{if(NR>13 && $2<100000.)print($0)}' ../Perple_X/sediment1_2.tab > 1.tmp
+awk '{if(NR>13 && $2<200000.)print($0)}' ../Perple_X/sediment2_2.tab > 2.tmp
+awk '{if(NR>13)print($0)}' ../Perple_X/sediment3_2.tab > 3.tmp
+cat 1.tmp 2.tmp 3.tmp > ../Perple_X/Sediment
+
+awk '{if(NR>13)print($0)}' ../Perple_X/serpentine_H2O.tab > ../Perple_X/Serpentine
+
+rm *.tmp
