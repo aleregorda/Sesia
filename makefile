@@ -2,7 +2,7 @@
 
 include Makefile.machine
 
-CODE = FALCON_v30_par.o
+CODE = FALCON_v3.0.o
 SUBROUTINE = parametri.o proprieta.o changed_parameters.o
 
 .f90.o:

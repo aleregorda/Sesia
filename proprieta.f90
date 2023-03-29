@@ -12,7 +12,7 @@
  coeffA,Eadf,Vadf,coeffAdf,teta_fr_0,Cohe_0,teta_fr_inf,Cohe_inf,Ws,f_scale,Visc_min,Visc_max,Ea_pe,ndisl_pe,Va_pe,coeffA_pe,&
  grain_m,grain_p
 
- num_mat=13                                                    !Numero di materiali del sistema
+ num_mat=10                                                    !Numero di materiali del sistema
 
  allocate(materiale(num_mat),Tref_M(num_mat),Rho_M(num_mat),Visc_M(num_mat),alpha_M(num_mat),Cp_M(num_mat),Hr_M(num_mat),&
  Kc_M(num_mat),ndisl(num_mat),Ea(num_mat),Va(num_mat),coeffA(num_mat),Eadf(num_mat),Vadf(num_mat),&
@@ -27,7 +27,7 @@
 !Materiale 1
  i=1
  t_cont=i
- materiale(i)='continental crust'
+ materiale(i)='continental crust'          !Dry granite Ranalli, 1995
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2750.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -37,7 +37,7 @@
  Kc_M(i)=3.2D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -68,7 +68,7 @@
 !Materiale 2
  i=2
  t_lcont=i
- materiale(i)='lower continental crust'
+ materiale(i)='lower continental crust'               !Felsic granulite Wilks and Carter, 1990
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2900.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -78,7 +78,7 @@
  Kc_M(i)=2.1D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -109,7 +109,7 @@
 !Materiale 3
  i=3
  t_oc=i
- materiale(i)='oceanic crust'
+ materiale(i)='oceanic crust'                       !Antigorite Petersen and Schiffer, 2016
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3200.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -123,10 +123,10 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=1.198819D-26                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=4.7D0                                                  !Stress exponent dislocation creep
- Ea(i)=4.85D05                                                  !Energia di attivazione dislocation creep
- Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
+ coeffA(i)=1.393D-37                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.8D0                                                  !Stress exponent dislocation creep
+ Ea(i)=8.9D04                                                  !Energia di attivazione dislocation creep
+ Va(i)=3.2D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
@@ -147,7 +147,7 @@
 
 !Materiale 4
  i=4
- materiale(i)='lower oceanic crust'
+ materiale(i)='lower oceanic crust'                 !Microgabbro Wilks and Carter, 1990
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3200.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -157,7 +157,7 @@
  Kc_M(i)=2.6D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -186,9 +186,9 @@
 !Materiale 5
  i=5
  t_serp=i
- materiale(i)='serpentine'
+ materiale(i)='serpentine'                       !Antigorite Petersen and Schiffer, 2016
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
- Rho_M(i)=3300.D0                                                  !Densità
+ Rho_M(i)=3000.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
  alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
  Cp_M(i)=1250.D0                                                  !Calore specifico
@@ -200,10 +200,10 @@
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
- Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
- Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
+ coeffA(i)=1.393D-37                                                  !Coefficiente pre-esponenziale dislocation creep
+ ndisl(i)=3.8D0                                                  !Stress exponent dislocation creep
+ Ea(i)=8.9D04                                                  !Energia di attivazione dislocation creep
+ Va(i)=3.2D-06                                                  !Volume di attivazione dislocation creep
 !Diffusion creep
  diffusion(i)=.false.                                                 !Utilizzo diffusion creep
  coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
@@ -218,16 +218,16 @@
  Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
  Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
 !Plasticity
- teta_fr_0(i)=5.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=1.D07                                                  !Coesione iniziale
- teta_fr_inf(i)=1.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=2.D06                                                       !Rapporto coesione per weakening
+ teta_fr_0(i)=25.D0                                                  !Angolo di frizione iniziale
+ Cohe_0(i)=2.D07                                                  !Coesione iniziale
+ teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
+ Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
 !Materiale 6
  i=6
  t_mantle=i
- materiale(i)='upper mantle'
+ materiale(i)='upper mantle'                    !Dry olivine Naliboff and Buiter, 2015 - Peierls Garel et al., 2014
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3300.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -237,7 +237,7 @@
  Kc_M(i)=2.25D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.false.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -268,7 +268,7 @@
 !Materiale 7
  i=7
  t_lmantle=i
- materiale(i)='mantle'
+ materiale(i)='mantle'                                        !Dry olivine Naliboff and Buiter, 2015
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3300.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -278,7 +278,7 @@
  Kc_M(i)=39.25D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.false.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -308,7 +308,7 @@
 
 !Materiale 8
  i=8
- materiale(i)='continental crust'
+ materiale(i)='continental crust'                               !Dry granite Ranalli, 1995
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2750.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -318,7 +318,7 @@
  Kc_M(i)=3.2D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -348,7 +348,7 @@
 
 !Materiale 9
  i=9
- materiale(i)='lower continental crust'
+ materiale(i)='lower continental crust'               !Felsic granulite Wilks and Carter, 1990
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2900.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -358,7 +358,7 @@
  Kc_M(i)=2.1D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
@@ -388,48 +388,8 @@
 
 !Materiale 10
  i=10
- materiale(i)='upper mantle'
- Tref_M(i)=273.15D0                                              !Temperatura di riferimento
- Rho_M(i)=3300.D0                                                  !Densità
- Visc_M(i)=1.D22                                                  !Viscosità
- alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
- Cp_M(i)=1250.D0                                                  !Calore specifico
- Hr_M(i)=0.D0                                                  !Calore radiogenico
- Kc_M(i)=2.25D0                                                  !Conduttività termica
- rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
- f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D19                                                  !Viscosità minima
- Visc_max(i)=1.D25                                                  !Viscosità massima
- uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
-!Disclocation creep
- coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
- Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
- Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
-!Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=6.07931D-19                                                  !Coefficiente pre-esponenziale diffusion creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=6.D-06                                                  !Volume di attivazione diffusion creep
- grain_m(i)=5.D-03                                                  !Grain size diffusion creep
- grain_p(i)=3.D0                                                  !Esponente grain size diffusion creep
-!Peierls creep
- peierls(i)=.true.                                                         !Utilizzo Peierls creep
- coeffA_pe(i)=1.135723D-28                                                  !Coefficiente pre-esponenziale Peierls creep
- ndisl_pe(i)=3.2D0                                                  !Stress exponent Peierls creep
- Ea_pe(i)=1.23D05                                                  !Energia di attivazione Peierls creep
- Va_pe(i)=0.D0                                                  !Volume di attivazione Peierls creep
-!Plasticity
- teta_fr_0(i)=5.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=1.D07                                                  !Coesione iniziale
- teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=1.D07                                                       !Rapporto coesione per weakening
- Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
-
-!Materiale 11
- i=11
  t_sed=i
- materiale(i)='sediment'
+ materiale(i)='sediment'                               !Wet granite Ranalli, 1995
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=2650.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -439,11 +399,11 @@
  Kc_M(i)=3.2D0                                                  !Conduttività termica
  rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
  f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
+ Visc_min(i)=1.D19                                                  !Viscosità minima
  Visc_max(i)=1.D25                                                  !Viscosità massima
  uniaxial(i)=.true.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
 !Disclocation creep
- coeffA(i)=7.962143D-28                                                  !Coefficiente pre-esponenziale dislocation creep
+ coeffA(i)=7.962143D-16                                                  !Coefficiente pre-esponenziale dislocation creep
  ndisl(i)=1.9D0                                                  !Stress exponent dislocation creep
  Ea(i)=1.4D05                                                  !Energia di attivazione dislocation creep
  Va(i)=0.D0                                                  !Volume di attivazione dislocation creep
@@ -467,91 +427,8 @@
  Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
  Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
 
-!Materiale 12
- i=12
- t_wet=i
- materiale(i)='wet mantle'
- Tref_M(i)=273.15D0                                              !Temperatura di riferimento
- Rho_M(i)=3300.D0                                                  !Densità
- Visc_M(i)=1.D22                                                  !Viscosità
- alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
- Cp_M(i)=1250.D0                                                  !Calore specifico
- Hr_M(i)=0.D0                                                  !Calore radiogenico
- Kc_M(i)=4.3D0                                                  !Conduttività termica
- rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
- f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D20                                                  !Viscosità minima
- Visc_max(i)=1.D25                                                  !Viscosità massima
- uniaxial(i)=.false.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
-!Disclocation creep
- coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
- Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
- Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
-!Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=3.D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=4.D-06                                                  !Volume di attivazione diffusion creep
- grain_m(i)=5.D-03                                                  !Grain size diffusion creep
- grain_p(i)=3.D0                                                  !Esponente grain size diffusion creep
-!Peierls creep
- peierls(i)=.true.                                                         !Utilizzo Peierls creep
- coeffA_pe(i)=1.D-150                                                  !Coefficiente pre-esponenziale Peierls creep
- ndisl_pe(i)=20.D0                                                  !Stress exponent Peierls creep
- Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
- Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
-!Plasticity
- teta_fr_0(i)=25.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=2.D07                                                  !Coesione iniziale
- teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
- Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
-
-!Materiale 13
- i=13
- t_mantleM=i
- materiale(i)='melt'
- Tref_M(i)=273.15D0                                              !Temperatura di riferimento
- Rho_M(i)=2900.D0                                                  !Densità
- Visc_M(i)=1.D22                                                  !Viscosità
- alpha_M(i)=3.D-05                                                  !Coefficiente espansione termica
- Cp_M(i)=1250.D0                                                  !Calore specifico
- Hr_M(i)=0.D0                                                  !Calore radiogenico
- Kc_M(i)=4.3D0                                                  !Conduttività termica
- rheology(i)=4                                                   !1-lineare; 2-creep; 3-rigido-plastico; 4-visco-plastico
- f_scale(i)=1.D0                                                   !Fattore di scala per la reologia
- Visc_min(i)=1.D18                                                  !Viscosità minima
- Visc_max(i)=1.D25                                                  !Viscosità massima
- uniaxial(i)=.false.                                         !Valore del coefficiente pre-esponenziale usato - .true. se uniassiale - .false. se convertito
-!Disclocation creep
- coeffA(i)=6.52D-16                                                  !Coefficiente pre-esponenziale dislocation creep
- ndisl(i)=3.5D0                                                  !Stress exponent dislocation creep
- Ea(i)=5.3D05                                                  !Energia di attivazione dislocation creep
- Va(i)=18.D-06                                                  !Volume di attivazione dislocation creep
-!Diffusion creep
- diffusion(i)=.false.                                                 !Utilizzo diffusion creep
- coeffAdf(i)=3.D-11                                                  !Coefficiente pre-esponenziale diffusion creep
- Eadf(i)=3.D05                                                  !Energia di attivazione diffusion creep
- Vadf(i)=4.D-06                                                  !Volume di attivazione diffusion creep
- grain_m(i)=5.D-03                                                  !Grain size diffusion creep
- grain_p(i)=3.D0                                                  !Esponente grain size diffusion creep
-!Peierls creep
- peierls(i)=.false.                                                         !Utilizzo Peierls creep
- coeffA_pe(i)=1.D-150                                                  !Coefficiente pre-esponenziale Peierls creep
- ndisl_pe(i)=20.D0                                                  !Stress exponent Peierls creep
- Ea_pe(i)=5.4D05                                                  !Energia di attivazione Peierls creep
- Va_pe(i)=10.D-06                                                  !Volume di attivazione Peierls creep
-!Plasticity
- teta_fr_0(i)=25.D0                                                  !Angolo di frizione iniziale
- Cohe_0(i)=2.D07                                                  !Coesione iniziale
- teta_fr_inf(i)=5.D0                                                       !Rapporto angolo di frizione per weakening
- Cohe_inf(i)=4.D06                                                       !Rapporto coesione per weakening
- Ws(i)=10.D0                                                       !Fattore di diminuzione viscosità per weakening
-
-
 !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-!ccccccccccccccccccccccccccccccccccccccc NON MODFICARE cccccccccccccccccccccccccccccccccccccccc
+!ccccccccccccccccccccccccccccccccccccccc NON MODIFICARE cccccccccccccccccccccccccccccccccccccccc
 !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
  if(i.ne.num_mat)then

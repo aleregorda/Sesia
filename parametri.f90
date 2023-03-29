@@ -1,8 +1,8 @@
  subroutine parametri(t_final,v_sx,v_dx,Rhoref,Cpref,Diff,Viscref,alpharef,lito_sx,lito_dx,&
- transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_wet,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,&
+ transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,&
  e1,e0v,e1v,rw,OH_0,alpham_dl,alpham_df,esp_m,esp_n,OUT_DIR,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,&
  Gy,Rgas,PF,perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,OUT_FILE_nb,OUT_FILE_nl,&
- ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,file_marc,file_grid,media,vel_corr,OUT_FILE_nl_vtu,&
+ ndof,ndofT,ngauss,ngaussP,it_max,ip_max,marc_min,marc_max,dx,file_marc,file_grid,media,vel_corr,OUT_FILE_nl_vtu,&
  OUT_FILE_nl_it,runge_4,OUT_FILE_final_distribution,g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,&
  L_coeff,kappa_s,kappa_sh,NEW_FILE_GRID,NEW_FILE_MARKERS,MARKERS_DISTRIBUTION,MARKERS_CONSTANT,init_num_mat,marc_elem,left_v,&
  right_v,top_v,bottom_v,left_T,right_T,top_T,bottom_T,LAYER_X,LAYER_Y,thick_x,thick_y,n_elem_x,n_elem_y,WEAK_SEED,WEAK_TYPE,&
@@ -10,27 +10,29 @@
  file_perplexO,file_perplexS,file_perplexSp,courant_number,time_step,check_markers,eff_average,t_initial,shear,adiabatic,solver_T,&
  layer_T,T_top,T_bot,y_top,y_bot,radio,cond,parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,dim_x_lg,dim_y_lg,&
  old_lgrid,lgrid,serpentine,Press_0,H2O_serp,ocean,weak_plastic,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing,healing_rate,&
- rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean,beta_press,delta_water,melt_ext)
+ rho_press,thermal_act,OUT_MODEL,OUT_PHASE,DIR_Perplex,H2O_ocean,beta_press,delta_water,melt_ext,penalty,element_type,tolM,iterM,&
+ pre_cond,norm_press)
 
  Implicit none
 
  logical, intent(out) :: perple_x,idratazione,free_surface,power_law,erosione,melting,equilib,OUT_VEL,OUT_TIME,OUT_TYPE,&
  OUT_FILE_nl,OUT_FILE_nl_vtu,OUT_FILE_nl_it,vel_corr,runge_4,OUT_FILE_final_distribution,NEW_FILE_GRID,NEW_FILE_MARKERS,&
  MARKERS_CONSTANT,left_T,right_T,top_T,bottom_T,WEAK_SEED,courant_number,check_markers,eff_average,shear,adiabatic,solver_T,&
- parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press
+ parabolic_T,MARKERS_VTU_OUT,MARKERS_TXT_OUT,lagrangian_grid,old_lgrid,serpentine,ocean,weak_plastic,healing,rho_press,penalty,&
+ pre_cond,norm_press
 
  character(len=*), intent(out) :: file_marc,file_grid,media,OUT_DIR,file_world,file_perplexM,file_perplexUC,file_perplexLC,&
  file_perplexO,file_perplexS,file_perplexSp,lgrid,OUT_MODEL,OUT_PHASE,DIR_Perplex
 
- integer, intent(out) :: ndof,ndofT,ngauss,ngaussP,nodi_elem,it_max,ip_max,marc_min,marc_max,dx,OUT_FILE_nb,init_num_mat,marc_elem,&
- left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T
+ integer, intent(out) :: ndof,ndofT,ngauss,ngaussP,it_max,ip_max,marc_min,marc_max,dx,OUT_FILE_nb,init_num_mat,marc_elem,&
+ left_v,right_v,top_v,bottom_v,MARKERS_DISTRIBUTION,LAYER_X,LAYER_Y,WEAK_NUMBER,WEAK_TYPE,layer_T,element_type,iterM
 
  double precision, intent(out) :: t_final,v_sx,v_dx,Rhoref,Diff,Viscref,alpharef,Cpref,lito_sx,lito_dx,H2O_serp,&
- transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_wet,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
+ transition_BC_sx,transition_BC_dx,OUT_FILE_tm,H2O_0,H2O_max,kappa_melt,gamma,chi,lambda,DH2O,A1,A2,A3,x_t,y_t,tol_melt,Hl,e0,e1,&
  e0v,e1v,rw,OH_0,alpham_dl,alpham_df,esp_m,esp_n,kappa_f,kappa_fsed,kappa_d,kappa_dsed,tol,rtau,pi,teta,eps,Cn,tolV,Gy,Rgas,PF,&
  g_coeff,gsed_coeff,p_coeff,sealevel,poro_s,poro_sh,zporo_s,zporo_sh,ratio,L_coeff,kappa_s,kappa_sh,THICK_AIR,time_step,t_initial,&
  dim_x_lg,dim_y_lg,Press_0,xmin_lg,xmax_lg,ymin_lg,ymax_lg,max_time_step,healing_rate,thermal_act,H2O_ocean,beta_press,delta_water,&
- melt_ext
+ melt_ext,tolM
 
  integer, dimension(:), allocatable :: n_elem_x,n_elem_y
  double precision, dimension(:), allocatable :: thick_x,thick_y,WEAK_POS_X,WEAK_POS_Y,WEAK_DIM_X,WEAK_DIM_Y,T_top,T_bot,y_top,&
@@ -46,33 +48,34 @@
  shear=.true.                                         !Utilizzo shear heating nell'equazione dell'energia
  adiabatic=.true.                                         !Utilizzo adiabatic heating nell'equazione dell'energia
  healing=.true.                                            !Calcolo strain healing
- rho_press=.true.                                            !Densità dipendente dalla pressione
- perple_x=.true.                                               !Utilizzo Perple_X per transizioni di fase
- idratazione=.true.                                             !Utilizzo idratazione
+ rho_press=.false.                                            !Densità dipendente dalla pressione
+ perple_x=.false.                                               !Utilizzo Perple_X per transizioni di fase
+ idratazione=.false.                                             !Utilizzo idratazione
  serpentine=.true.                                             !Serpentinizzazione del mantello
- ocean=.true.                                             !Oceanizzazione del melting
- melting=.true.                                            !Utlizzo meccanismo di melting
+ ocean=.false.                                             !Oceanizzazione del melting
+ melting=.false.                                            !Utlizzo meccanismo di melting
  erosione=.true.                                            !Utilizzo meccanismo erosione/sedimentazione
- equilib=.true.                                       !Fase di riequilibrazione isostatica
+ equilib=.false.                                       !Fase di riequilibrazione isostatica
  vel_corr=.true.                                       !Conservative Velocity Interpolation
  runge_4=.false.                                          !Utilizzo 4th-order Runge-Kutta
  check_markers=.true.                                     !Aggiunta/eliminazione marcatori - se .false. il numero di marcatori non viene modificato
  media='geometrica'                                        !Media usata per calcolo viscosità elementale
- file_world='Initial_weak_seed.wb'                                   !Nome file World Builder
+ file_world='Initial_Sesia_no_microcontinent.wb'                                   !Nome file World Builder
 
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
- t_final=20.D06                                               !Tempo finale
+ t_final=30.D06                                               !Tempo finale
  Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=1.D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../Output_models/Sesia'              !Main Directory in cui scrivere i file di output
- OUT_MODEL='No_microcontinent_idra_weak_seed_perplex'                                                   !Nome della directory per il modello in corso
-! OUT_PHASE='Compression_0-20Myr'                                         !Nome della directory per la fase evolutiva in corso
- OUT_PHASE='Isostatic'                                         !Nome della directory per la fase evolutiva in corso
+ OUT_DIR='../../Output_models/Subduction/Sesia/100kmMC_100kmMO'              !Main Directory in cui scrivere i file di output
+ OUT_MODEL='vs_1_vu_0'                 !Nome della directory per il modello in corso
+ OUT_PHASE='Compression_0-30Myr'                                         !Nome della directory per la fase evolutiva in corso
+! OUT_MODEL=''
+! OUT_PHASE='Isostatic'                                         !Nome della directory per la fase evolutiva in corso
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
@@ -83,7 +86,7 @@
  OUT_FILE_nl_it=.false.                                                     !Output file con numero iterazioni non-lineari
  OUT_FILE_final_distribution=.true.                                        !Output file con distribuzione finale nodi e marcatori
  MARKERS_VTU_OUT=.false.                                                  !Output file vtu per i marcatori
- MARKERS_TXT_OUT=.false.                                                  !Output file txt per i marcatori
+ MARKERS_TXT_OUT=.true.                                                  !Output file txt per i marcatori
 
 !cccccccccccccccccccccccc Parametri della griglia Lagrangiana cccccccccccccccccccccccc
  lagrangian_grid=.true.                                                  !Visualizzazione griglia Lagrangiana
@@ -135,8 +138,8 @@
  cond(1)=2.5D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
- file_grid='Griglia_weak_seed'               !Nome del file griglia
-! file_grid='../Output_models/Sesia/No_microcontinent_idra_weak_seed/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='Griglia_100kmMC_50kmMO'               !Nome del file griglia
+ file_grid='../../Output_models/Subduction/Sesia/100kmMC_100kmMO/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -163,8 +166,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
- file_marc='Marcatori_weak_seed'                                        !Nome del file marcatori
-! file_marc='../Output_models/Sesia/No_microcontinent_idra_weak_seed/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='Marcatori_100kmMC_50kmMO'                                        !Nome del file marcatori
+ file_marc='../../Output_models/Subduction/Sesia/100kmMC_100kmMO/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=10                                            !Numero iniziale dei materiali
@@ -187,10 +190,10 @@
  eff_average=.false.                                    !Calcolo viscosità effettiva markers - .true. media armonica - .false. taglio visc. min e max
  it_max=100                                                       !Iterazioni massime power-law
  tol=1.D-03                                                  !Tolleranza convergenza power-law
- e0=0.D0                                                  !Strain iniziale per weakening plastico
- e1=1.D0                                                  !Strain finale per weakening plastico
- e0v=0.D0                                                  !Strain iniziale per weakening viscoso
- e1v=1.D0                                                  !Strain finale per weakening viscoso
+ e0=0.5D0                                                  !Strain iniziale per weakening plastico
+ e1=1.5D0                                                  !Strain finale per weakening plastico
+ e0v=1.D0                                                  !Strain iniziale per weakening viscoso
+ e1v=5.D0                                                  !Strain finale per weakening viscoso
 
 !ccccccccccccccccccccccccccccccccc Parametri healing ccccccccccccccccccccccccccccccccc
  healing_rate=1.D-14                                              !Velocità di strain healing
@@ -203,17 +206,17 @@
 !ccccccccccccccccccccccccccccccccc Parametri Perple_X cccccccccccccccccccccccccccccccc
  DIR_Perplex='Phase_changes'
  file_perplexM='Mantle'                          !Nome file Perple_x per il mantello anidro
- file_perplexUC='Upper_continental'                          !Nome file Perple_x per il la crosta continentale superiore
- file_perplexLC='Lower_continental'                          !Nome file Perple_x per la crosta continental inferiore
+ file_perplexUC='Upper continental'                          !Nome file Perple_x per il la crosta continentale superiore
+ file_perplexLC='Lower continental'                          !Nome file Perple_x per la crosta continental inferiore
  file_perplexO='Ocean'                          !Nome file Perple_x per la crosta oceanica
  file_perplexS='Sediment'                          !Nome file Perple_x per i sedimenti
  file_perplexSp='Serpentine'                          !Nome file Perple_x per il mantello idrato
 
 !ccccccccccccccccccccccccccccc Parametri per idratazione ccccccccccccccccccccccccccccc
  H2O_0=0.D0                                                  !Quantità iniziale di acqua nel mantello in wt%
- H2O_wet=2.D0                                                  !Quantità massima di acqua nel mantello in wt%
- H2O_serp=6.8D0                                                  !Quantità massima di acqua nel serpentino in wt%
- H2O_ocean=5.5D0                                                   !quantità massima di acqua nell'oceano in wt%
+ H2O_max=0.D0                                                  !Quantità massima di acqua nel mantello in wt%
+ H2O_serp=0.D0                                                  !Quantità massima di acqua nel serpentino in wt%
+ H2O_ocean=0.D0                                                  !Quantità massima di acqua nell'oceano in wt%
  rw=1.D0                                               !Esponente per la diminuzione della viscosità in presenza di acqua
  OH_0=0.062D0                                               !Limite quantità di acqua per comportamento anidro
 
@@ -267,7 +270,10 @@
  ndofT=1                                                            !Gradi di libertà temperatura
  ngauss=4                                                            !Punti di integrazione velocità
  ngaussP=1                                                       !Punti di integrazione pressione
- nodi_elem=4                                                       !Numero nodi per elemento
+ penalty=.true.                                                    !Utilizzo penalty method
+ pre_cond=.false.                                                    !Utilizzo preconditioner matrix
+ norm_press=.true.                                                       !Normalizzazione pressione
+ element_type=1                                                   !Tipo elemento utilizzato - 1-Q1xP0; 2-Q1+xQ1; 3-Q2xQ1
  dx=11                                                       !Numero nodi markers-chain per elemento
  rtau=1.D0                                                  !Coefficiente correzione convezione
  pi=3.14159265359D0                                             !Pi greco
@@ -277,5 +283,7 @@
  ip_max=10                                                       !Iterazioni massime divergenza velocità
  tolV=1.D-02                                                  !Tolleranza convergenza divergenza velocità
  PF=1.D06                                                  !Penalty factor
+ tolM=1.D-08                                                 !Tolleranza Uzawa mixed formulation
+ iterM=500                                                      !Iterazioni massime mixed formulation
 
  end subroutine parametri
