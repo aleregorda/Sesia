@@ -227,7 +227,7 @@
 !Materiale 6
  i=6
  t_mantle=i
- materiale(i)='upper mantle'                    !Dry olivine Naliboff and Buiter, 2015 - Peierls Garel et al., 2014
+ materiale(i)='upper mantle'                    !Dry olivine Hirth and Kohlstedt, 2003 - Naliboff and Buiter, 2015 - Peierls Garel et al., 2014
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3300.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità
@@ -268,7 +268,7 @@
 !Materiale 7
  i=7
  t_lmantle=i
- materiale(i)='mantle'                                        !Dry olivine Naliboff and Buiter, 2015
+ materiale(i)='mantle'                                        !Dry olivine Naliboff and Buiter, 2015 - Diffusion Hirth and Kohlstedt, 2003
  Tref_M(i)=273.15D0                                              !Temperatura di riferimento
  Rho_M(i)=3300.D0                                                  !Densità
  Visc_M(i)=1.D22                                                  !Viscosità

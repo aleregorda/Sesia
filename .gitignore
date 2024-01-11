@@ -7,5 +7,8 @@ Elementi*
 codice
 fort.*
 a.out
-output.code
 mumps*
+*.o
+makefile
+Makefile.machine
+Start.job

@@ -65,22 +65,22 @@
 !cccccccccccccccccccccccccccc Parametri per il time step ccccccccccccccccccccccccccccc
  courant_number=.true.                                            !Utilizzo Courant number per time step
  t_initial=0.D06                                               !Tempo iniziale
- t_final=30.D06                                               !Tempo finale
+ t_final=4.5D06                                               !Tempo finale
  Cn=0.25D0                                                  !Courant number - compreso tra 0 e 1
  time_step=5.D03                                                 !Time step se Courant number=.false.
  max_time_step=1.D05                                                 !Massimo time step consentito
 
 !ccccccccccccccccccccccccccccc Parametri per file output ccccccccccccccccccccccccccccc
- OUT_DIR='../../Output_models/Subduction/Sesia/100kmMC_100kmMO'              !Main Directory in cui scrivere i file di output
- OUT_MODEL='vs_1_vu_0'                 !Nome della directory per il modello in corso
- OUT_PHASE='Compression_0-30Myr'                                         !Nome della directory per la fase evolutiva in corso
+ OUT_DIR='../../Output_models/Subduction/Sesia/100kmMC_50kmMO'              !Main Directory in cui scrivere i file di output
+ OUT_MODEL='vs_4_vu_3'                 !Nome della directory per il modello in corso
+ OUT_PHASE='Compression_0-4_5Myr'                                         !Nome della directory per la fase evolutiva in corso
 ! OUT_MODEL=''
 ! OUT_PHASE='Isostatic'                                         !Nome della directory per la fase evolutiva in corso
  OUT_VEL=.true.                                                       !Output velocità - .true. in cm/yr - .false. in m/s
  OUT_TIME=.true.                                                       !Output tempo - .true. in Myr - .false. in s
  OUT_TYPE=.true.                                                       !Intervallo file di output - .true. per tempo - .false. per numero
  OUT_FILE_nb=1                                                       !Numero di iterazioni per il file di output - se OUT_TYPE=.false.
- OUT_FILE_tm=1.D06                                                       !Tempo di uscita per il file di output - se OUT_TYPE=.true.
+ OUT_FILE_tm=0.15D06                                                       !Tempo di uscita per il file di output - se OUT_TYPE=.true.
  OUT_FILE_nl=.false.                                                     !Output file per ogni iterazione non-lineare
  OUT_FILE_nl_vtu=.false.                                                     !Output file vtu per ogni iterazione non-lineare
  OUT_FILE_nl_it=.false.                                                     !Output file con numero iterazioni non-lineari
@@ -109,8 +109,8 @@
  Press_0=0.0D0                                                   !Pressione superficiale
 
 !cccccccccccccccccccccccccccc Boundary condition velocità cccccccccccccccccccccccccccc
- v_sx=1.D0                                                  !Velocità lato sinistro in cm/yr
- v_dx=0.D0                                                  !Velocità lato destro in cm/yr
+ v_sx=4.D0                                                  !Velocità lato sinistro in cm/yr
+ v_dx=-3.D0                                                  !Velocità lato destro in cm/yr
  left_v=3                                                 !BC lato sx - 1-open; 2-free-slip; 3-fixed
  right_v=3                                                 !BC lato dx - 1-open; 2-free-slip; 3-fixed
  top_v=1                                                 !BC top - 1-open; 2-free-slip; 3-fixed
@@ -138,8 +138,8 @@
  cond(1)=2.5D0                                             !Conduttività del livello termico con profilo non lineare
 
 !cccccccccccccccccccccccccccccc Parametri della griglia cccccccccccccccccccccccccccccc
-! file_grid='Griglia_100kmMC_50kmMO'               !Nome del file griglia
- file_grid='../../Output_models/Subduction/Sesia/100kmMC_100kmMO/Isostatic/Griglia_final'               !Nome del file griglia
+! file_grid='../../Output_models/Subduction/Sesia/50kmMC_100kmMO/vs_1_vu_3/Compression_0-4Myr/Griglia_final'               !Nome del file griglia
+ file_grid='../../Output_models/Subduction/Sesia/100kmMC_50kmMO/Isostatic/Griglia_final'               !Nome del file griglia
  NEW_FILE_GRID=.false.                                          !File griglia - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_GRID=.true.
  LAYER_X=5                                                !Numero settori con diversa larghezza degli elementi lungo X
@@ -166,8 +166,8 @@
  marc_min=16                                             !Marcatori minimi per elemento di minore dimensione - solo se check_markers=.true.
  marc_max=30                                             !Marcatori massimi per elemento di minore dimensione - solo se check_markers=.true.
  THICK_AIR=0.D0                                               !Spessore sticky air
-! file_marc='Marcatori_100kmMC_50kmMO'                                        !Nome del file marcatori
- file_marc='../../Output_models/Subduction/Sesia/100kmMC_100kmMO/Isostatic/Marcatori_final'                                        !Nome del file marcatori
+! file_marc='../../Output_models/Subduction/Sesia/50kmMC_100kmMO/vs_1_vu_3/Compression_0-4Myr/Marcatori_final'                                        !Nome del file marcatori
+ file_marc='../../Output_models/Subduction/Sesia/100kmMC_50kmMO/Isostatic/Marcatori_final'                                        !Nome del file marcatori
  NEW_FILE_MARKERS=.false.                                  !File marcatori - .true. crea nuovo file - .false. utilizza file esistente
 !Modificare i parametri successivi solo se NEW_FILE_MARKERS=.true.
  init_num_mat=10                                            !Numero iniziale dei materiali
