@@ -1,0 +1,1 @@
+This repository contains the FALCON code in the version used for the paper "Thermo-mechanical effects of microcontinent collision on ocean-continent subduction system" with the input files with parameters and properties used in all models.
